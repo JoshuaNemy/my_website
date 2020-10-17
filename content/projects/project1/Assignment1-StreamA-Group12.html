@@ -1,0 +1,684 @@
+
+
+<div id="where-do-people-drink-the-most-beer-wine-and-spirits" class="section level1">
+<h1>Where Do People Drink The Most Beer, Wine And Spirits?</h1>
+<p>Back in 2014, <a href="https://fivethirtyeight.com/features/dear-mona-followup-where-do-people-drink-the-most-beer-wine-and-spirits/">fivethiryeight.com</a> published an article on alchohol consumption in different countries. The data <code>drinks</code> is available as part of the <code>fivethirtyeight</code> package. Make sure you have installed the <code>fivethirtyeight</code> package before proceeding.</p>
+<pre class="r"><code>library(fivethirtyeight)
+data(drinks)
+
+
+# or download directly
+alcohol_direct &lt;- read_csv(&quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv&quot;)</code></pre>
+<p>The skim function was useful for understanding the variable types and checking for missing values.</p>
+<pre class="r"><code>skim(alcohol_direct)</code></pre>
+<table>
+<caption>(#tab:glimpse_skim_data)Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">alcohol_direct</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">193</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">5</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">country</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">28</td>
+<td align="right">0</td>
+<td align="right">193</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">beer_servings</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">106.16</td>
+<td align="right">101.14</td>
+<td align="right">0</td>
+<td align="right">20.0</td>
+<td align="right">76.0</td>
+<td align="right">188.0</td>
+<td align="right">376.0</td>
+<td align="left">▇▃▂▂▁</td>
+</tr>
+<tr class="even">
+<td align="left">spirit_servings</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">80.99</td>
+<td align="right">88.28</td>
+<td align="right">0</td>
+<td align="right">4.0</td>
+<td align="right">56.0</td>
+<td align="right">128.0</td>
+<td align="right">438.0</td>
+<td align="left">▇▃▂▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">wine_servings</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">49.45</td>
+<td align="right">79.70</td>
+<td align="right">0</td>
+<td align="right">1.0</td>
+<td align="right">8.0</td>
+<td align="right">59.0</td>
+<td align="right">370.0</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">total_litres_of_pure_alcohol</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">4.72</td>
+<td align="right">3.77</td>
+<td align="right">0</td>
+<td align="right">1.3</td>
+<td align="right">4.2</td>
+<td align="right">7.2</td>
+<td align="right">14.4</td>
+<td align="left">▇▃▅▃▁</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># There are two variable types, numeric and character. The country column is a character type and the other four column (beer, wine, spirit, and total) are numeric. 
+# No missing values to worry about. </code></pre>
+<p>Plot that shows the top 25 beer consuming countries</p>
+<pre class="r"><code>top_25_beer &lt;- glimpse(alcohol_direct) %&gt;%
+  arrange(desc(beer_servings)) %&gt;% 
+  slice(1:25)</code></pre>
+<pre><code>## Rows: 193
+## Columns: 5
+## $ country                      &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;An…
+## $ beer_servings                &lt;dbl&gt; 0, 89, 25, 245, 217, 102, 193, 21, 261, …
+## $ spirit_servings              &lt;dbl&gt; 0, 132, 0, 138, 57, 128, 25, 179, 72, 75…
+## $ wine_servings                &lt;dbl&gt; 0, 54, 14, 312, 45, 45, 221, 11, 212, 19…
+## $ total_litres_of_pure_alcohol &lt;dbl&gt; 0.0, 4.9, 0.7, 12.4, 5.9, 4.9, 8.3, 3.8,…</code></pre>
+<pre class="r"><code>ggplot(top_25_beer, aes(x =fct_reorder(country,beer_servings),y=beer_servings))+
+  geom_col()+
+  geom_smooth(se= FALSE)+
+  theme(plot.title = element_text(vjust = 1, size = 5),axis.text.x = element_text(angle = 90))+
+  labs(title = &quot;Top 25 Beer Consuming Countries&quot;, x= &quot;Countries&quot;, y= &quot;Beer Servings&quot; )+
+  NULL</code></pre>
+<p><img src="Assignment1-StreamA-Group12_files/figure-html/beer_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>Plot that shows the top 25 wine consuming countries</p>
+<pre class="r"><code>top_25_wine &lt;- glimpse(alcohol_direct) %&gt;%
+  arrange(desc(wine_servings)) %&gt;% 
+  slice(1:25)</code></pre>
+<pre><code>## Rows: 193
+## Columns: 5
+## $ country                      &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;An…
+## $ beer_servings                &lt;dbl&gt; 0, 89, 25, 245, 217, 102, 193, 21, 261, …
+## $ spirit_servings              &lt;dbl&gt; 0, 132, 0, 138, 57, 128, 25, 179, 72, 75…
+## $ wine_servings                &lt;dbl&gt; 0, 54, 14, 312, 45, 45, 221, 11, 212, 19…
+## $ total_litres_of_pure_alcohol &lt;dbl&gt; 0.0, 4.9, 0.7, 12.4, 5.9, 4.9, 8.3, 3.8,…</code></pre>
+<pre class="r"><code>ggplot(top_25_wine, aes(x =fct_reorder(country,wine_servings),y=wine_servings))+
+  geom_col()+
+  geom_smooth(se= FALSE)+
+  theme(plot.title = element_text(vjust = 1, size = 5),axis.text.x = element_text(angle = 90))+
+  labs(title = &quot;Top 25 Wine Consuming Countries&quot;, x= &quot;Countries&quot;, y= &quot;Wine Servings&quot; )+
+  NULL</code></pre>
+<p><img src="Assignment1-StreamA-Group12_files/figure-html/wine_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>Plot that shows the top 25 spirit consuming countries</p>
+<pre class="r"><code>top_25_spirit &lt;- glimpse(alcohol_direct) %&gt;%
+  arrange(desc(spirit_servings)) %&gt;% 
+  slice(1:25)</code></pre>
+<pre><code>## Rows: 193
+## Columns: 5
+## $ country                      &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;An…
+## $ beer_servings                &lt;dbl&gt; 0, 89, 25, 245, 217, 102, 193, 21, 261, …
+## $ spirit_servings              &lt;dbl&gt; 0, 132, 0, 138, 57, 128, 25, 179, 72, 75…
+## $ wine_servings                &lt;dbl&gt; 0, 54, 14, 312, 45, 45, 221, 11, 212, 19…
+## $ total_litres_of_pure_alcohol &lt;dbl&gt; 0.0, 4.9, 0.7, 12.4, 5.9, 4.9, 8.3, 3.8,…</code></pre>
+<pre class="r"><code>ggplot(top_25_spirit, aes(x =fct_reorder(country,spirit_servings),y=spirit_servings))+
+  geom_col()+
+  geom_smooth(se= FALSE)+
+  theme(plot.title = element_text(vjust = 1, size = 5),axis.text.x = element_text(angle = 90))+
+  labs(title = &quot;Top 25 Spirit Consuming Countries&quot;, x= &quot;Countries&quot;, y= &quot;Spirit Servings&quot; )+
+  NULL</code></pre>
+<p><img src="Assignment1-StreamA-Group12_files/figure-html/spirit_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>The graphs depict that, on average, Namibians consumer the most beer, the French consume the most wine, and Grenadians consume the most spirits. These results may be a consequence of availability of particular ingredients (sugarcane,hops, barley, grapes), implications of specific climates, or cultural influences. Other countries have increasingly stringent or relaxed regulations on the different types of alcohol which alter the consumption habits of consumers.</p>
+</div>
+<div id="analysis-of-movies--imdb-dataset" class="section level1">
+<h1>Analysis of movies- IMDB dataset</h1>
+<p>We will look at a subset sample of movies, taken from the <a href="https://www.kaggle.com/carolzhangdc/imdb-5000-movie-dataset">Kaggle IMDB 5000 movie dataset</a></p>
+<p>This loads the dataset movies.</p>
+<pre class="r"><code>movies &lt;- read_csv(&quot;movies.csv&quot;)</code></pre>
+<pre><code>## Error: &#39;movies.csv&#39; does not exist in current working directory (&#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/content/projects/project1&#39;).</code></pre>
+<pre class="r"><code>glimpse(movies)</code></pre>
+<pre><code>## Error in glimpse(movies): object &#39;movies&#39; not found</code></pre>
+<p>Skim was used to check for missing value, of which there were no missing values. However, there are duplicate values for the three character type columns.</p>
+<pre class="r"><code>skim(movies)</code></pre>
+<pre><code>## Error in skim(movies): object &#39;movies&#39; not found</code></pre>
+<p>This is used for displaying a series of tables concerning movies.</p>
+<pre class="r"><code># Table with the count of movies by genre, ranked in descending order
+movies %&gt;% 
+  group_by(genre) %&gt;% 
+  count(sort = TRUE)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;movies&#39; not found</code></pre>
+<pre class="r"><code># Table with the average gross earning and budget (`gross` and `budget`) by genre
+movies %&gt;% 
+  group_by(genre) %&gt;% 
+  summarize(mean_budget = mean(budget), mean_gross_earning = mean(gross), return_on_budget = mean_gross_earning/mean_budget) %&gt;%
+  arrange(desc(return_on_budget))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;movies&#39; not found</code></pre>
+<pre class="r"><code># Table that shows the top 15 directors who have created the highest gross revenue in the box office
+
+top_15_directors &lt;- movies %&gt;%
+  group_by(director) %&gt;% 
+  summarize(mean_director = mean(gross), standard_dev = sd(gross), median = median(gross), total = sum(gross)) %&gt;% 
+  arrange(desc(total)) %&gt;% 
+  slice(1:15)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;movies&#39; not found</code></pre>
+<pre class="r"><code>top_15_directors</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;top_15_directors&#39; not found</code></pre>
+<pre class="r"><code># Table that describes how ratings are distributed by genre.
+rating &lt;- movies %&gt;%
+  group_by(genre) %&gt;% 
+  summarize(min = min(rating), max = max(rating), median = median(rating), standard_dev = sd(rating))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;movies&#39; not found</code></pre>
+<pre class="r"><code>ggplot(movies, aes(x = rating))+
+  geom_density()+
+  labs(title = &quot;Ratings Density&quot;, colour = rating)</code></pre>
+<pre><code>## Error in ggplot(movies, aes(x = rating)): object &#39;movies&#39; not found</code></pre>
+<p>We have placed “gross” on the y-axis and “cast_facebook_likes” on the x-axis. The amount of Facebook likes the cast has received is likely not the strongest indicator of high gross revenues.</p>
+<pre class="r"><code>ggplot(movies, aes(x = cast_facebook_likes, y= gross))+
+  geom_point()+
+  scale_x_log10()+
+  scale_y_log10()</code></pre>
+<pre><code>## Error in ggplot(movies, aes(x = cast_facebook_likes, y = gross)): object &#39;movies&#39; not found</code></pre>
+<p>The correlation between gross revenues and budget seems to be stronger than the previous correlation with Facebook likes.</p>
+<pre class="r"><code>ggplot(movies, aes(x = gross, y= budget))+
+  geom_point()+
+  scale_x_log10()+
+  scale_y_log10()</code></pre>
+<pre><code>## Error in ggplot(movies, aes(x = gross, y = budget)): object &#39;movies&#39; not found</code></pre>
+<p>There seems to be a small relationship between gross revenue and rating when faceted by genre. Depending on the genre the correlation slightly changes, or there isn’t enough data in particular genres to make a determination.</p>
+<pre class="r"><code>ggplot(movies, aes(x = gross, y= rating))+
+  geom_point()+
+  facet_wrap(vars(genre))+
+  scale_x_log10()+
+  scale_y_log10()</code></pre>
+<pre><code>## Error in ggplot(movies, aes(x = gross, y = rating)): object &#39;movies&#39; not found</code></pre>
+<p>Returns of financial stocks</p>
+<pre class="r"><code>nyse &lt;- read_csv(&quot;nyse.csv&quot;)</code></pre>
+<pre><code>## Error: &#39;nyse.csv&#39; does not exist in current working directory (&#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/content/projects/project1&#39;).</code></pre>
+<p>Table and a bar plot that shows the number of companies per sector, in descending order</p>
+<pre class="r"><code>chart_sector &lt;- nyse %&gt;% 
+  group_by (sector) %&gt;% 
+  summarise(number_of_companies = n()) %&gt;% 
+  arrange(desc(number_of_companies))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;nyse&#39; not found</code></pre>
+<pre class="r"><code>ggplot (chart_sector, aes( x = fct_reorder(sector, -number_of_companies), y = number_of_companies))+
+  geom_col()+
+  labs(title = &quot;Companies Per Sector&quot;, x= &quot;Sector&quot;, y= &quot;Number Per Sector&quot; )+
+  theme(axis.text.x = element_text(angle = 90))</code></pre>
+<pre><code>## Error in ggplot(chart_sector, aes(x = fct_reorder(sector, -number_of_companies), : object &#39;chart_sector&#39; not found</code></pre>
+<p>Gathers the tickers from Wikipedia</p>
+<pre class="r"><code>djia_url &lt;- &quot;https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average&quot;
+
+#get tables that exist on URL
+tables &lt;- djia_url %&gt;% 
+  read_html() %&gt;% 
+  html_nodes(css=&quot;table&quot;)
+
+
+# parse HTML tables into a dataframe called djia. 
+# Use purr::map() to create a list of all tables in URL
+djia &lt;- map(tables, . %&gt;% 
+               html_table(fill=TRUE)%&gt;% 
+               clean_names())
+
+
+# constituents
+table1 &lt;- djia[[2]] %&gt;% # the second table on the page contains the ticker symbols
+  mutate(date_added = ymd(date_added),
+         
+         # if a stock is listed on NYSE, its symbol is, e.g., NYSE: MMM
+         # We will get prices from yahoo finance which requires just the ticker
+         
+         # if symbol contains &quot;NYSE*&quot;, the * being a wildcard
+         # then we jsut drop the first 6 characters in that string
+         ticker = ifelse(str_detect(symbol, &quot;NYSE*&quot;),
+                          str_sub(symbol,7,11),
+                          symbol)
+         )
+
+# we need a vector of strings with just the 30 tickers + SPY
+tickers &lt;- table1 %&gt;% 
+  select(ticker) %&gt;% 
+  pull() %&gt;% # pull() gets them as a sting of characters
+  c(&quot;SPY&quot;) # and lets us add SPY, the SP500 ETF</code></pre>
+<p>Price data on stocks</p>
+<pre class="r"><code># Notice the cache=TRUE argument in the chunk options. Because getting data is time consuming, # cache=TRUE means that once it downloads data, the chunk will not run again next time you knit your Rmd
+
+myStocks &lt;- tickers %&gt;% 
+  tq_get(get  = &quot;stock.prices&quot;,
+         from = &quot;2000-01-01&quot;,
+         to   = &quot;2020-08-31&quot;) %&gt;%
+  group_by(symbol) 
+
+glimpse(myStocks) # examine the structure of the resulting data frame</code></pre>
+<pre><code>## Rows: 153,121
+## Columns: 8
+## Groups: symbol [31]
+## $ symbol   &lt;chr&gt; &quot;MMM&quot;, &quot;MMM&quot;, &quot;MMM&quot;, &quot;MMM&quot;, &quot;MMM&quot;, &quot;MMM&quot;, &quot;MMM&quot;, &quot;MMM&quot;, &quot;MMM…
+## $ date     &lt;date&gt; 2000-01-03, 2000-01-04, 2000-01-05, 2000-01-06, 2000-01-07,…
+## $ open     &lt;dbl&gt; 48.0, 46.4, 45.6, 47.2, 50.6, 50.2, 50.4, 51.0, 50.7, 50.4, …
+## $ high     &lt;dbl&gt; 48.2, 47.4, 48.1, 51.2, 51.9, 51.8, 51.2, 51.8, 50.9, 50.5, …
+## $ low      &lt;dbl&gt; 47.0, 45.3, 45.6, 47.2, 50.0, 50.0, 50.2, 50.4, 50.2, 49.5, …
+## $ close    &lt;dbl&gt; 47.2, 45.3, 46.6, 50.4, 51.4, 51.1, 50.2, 50.4, 50.4, 49.7, …
+## $ volume   &lt;dbl&gt; 2173400, 2713800, 3699400, 5975800, 4101200, 3863800, 235760…
+## $ adjusted &lt;dbl&gt; 28.1, 26.9, 27.7, 30.0, 30.5, 30.4, 29.9, 30.0, 30.0, 29.5, …</code></pre>
+<p>Calculation of different return periods</p>
+<pre class="r"><code>#calculate daily returns
+myStocks_returns_daily &lt;- myStocks %&gt;%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = &quot;daily&quot;, 
+               type       = &quot;log&quot;,
+               col_rename = &quot;daily_returns&quot;,
+               cols = c(nested.col))  
+
+#calculate monthly  returns
+myStocks_returns_monthly &lt;- myStocks %&gt;%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = &quot;monthly&quot;, 
+               type       = &quot;arithmetic&quot;,
+               col_rename = &quot;monthly_returns&quot;,
+               cols = c(nested.col)) 
+
+#calculate yearly returns
+myStocks_returns_annual &lt;- myStocks %&gt;%
+  group_by(symbol) %&gt;%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = &quot;yearly&quot;, 
+               type       = &quot;arithmetic&quot;,
+               col_rename = &quot;yearly_returns&quot;,
+               cols = c(nested.col))</code></pre>
+<p>Summarized monthly returns since 2017-01-01 for each of the stocks and <code>SPY</code>; min, max, median, mean, SD.</p>
+<pre class="r"><code>summarise_monthly_returns &lt;- myStocks_returns_monthly %&gt;%
+  dplyr::group_by(symbol) %&gt;%
+  dplyr::filter(date &gt;= as.Date(&quot;2017-01-01&quot;)) %&gt;%
+  summarise(min_return = min(monthly_returns), max_return = max(monthly_returns), median_return = median(monthly_returns), mean_return = mean(monthly_returns), std_return = sd(monthly_returns))
+
+summarise_monthly_returns</code></pre>
+<pre><code>## # A tibble: 31 x 6
+##    symbol min_return max_return median_return mean_return std_return
+##    &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+##  1 AAPL       -0.181     0.200        0.0513     0.0387       0.0873
+##  2 AMGN       -0.104     0.180        0.0235     0.0171       0.0664
+##  3 AXP        -0.221     0.0988       0.0150     0.0109       0.0639
+##  4 BA         -0.458     0.257        0.0250     0.0124       0.120 
+##  5 CAT        -0.199     0.138        0.0318     0.0151       0.0742
+##  6 CRM        -0.155     0.391        0.0403     0.0350       0.0850
+##  7 CSCO       -0.155     0.130        0.0185     0.0125       0.0673
+##  8 CVX        -0.224     0.270        0.00173   -0.000926     0.0748
+##  9 DIS        -0.179     0.234       -0.00208    0.00967      0.0750
+## 10 DOW        -0.276     0.255        0.0456     0.00898      0.128 
+## # … with 21 more rows</code></pre>
+<p>Density plot, using <code>geom_density()</code>, for each of the stocks</p>
+<pre class="r"><code>ggplot(myStocks_returns_monthly, aes( x = monthly_returns)) +
+  geom_density() +
+  facet_wrap(~symbol) +
+  labs(title = &quot;Density plot of the distribution of monthly returns&quot;,
+    y = &quot;Density&quot;, x = &quot;Monthly Returns&quot;) +
+    theme(plot.title = element_text(hjust = 0.5, size = 12, face = &quot;bold&quot;))</code></pre>
+<p><img src="Assignment1-StreamA-Group12_files/figure-html/density_monthly_returns-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>We can infer from the plot that the “SPY” is the lest risky since the monthly return distribution is the most narrow, whereas the “DOW” has the widest distribution making it the most risky.</p>
+<p>Plot that shows the expected monthly return (mean) of a stock on the Y axis and the risk (standard deviation) in the X-axis.</p>
+<pre class="r"><code>myStocks_returns_monthly %&gt;% 
+  group_by(symbol) %&gt;% 
+  summarise(mean=mean(monthly_returns),sd=sd(monthly_returns)) %&gt;%
+  ggplot(aes(x=sd,y=mean,label=symbol)) +
+  geom_point() +
+  geom_smooth() +
+  ggrepel::geom_text_repel(show.legend = FALSE,size = 5) +
+  labs(title = &quot;Expected Monthly Returns vs Risk &quot;,
+    y = &quot;Expected monthly returns&quot;,
+    x = &quot;Risk&quot;) +
+    theme(plot.title = element_text(hjust = 0.5, size = 10, face = &quot;bold&quot;))</code></pre>
+<p><img src="Assignment1-StreamA-Group12_files/figure-html/risk_return_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>From this plot we can say that usually when the risk is low the expected monthly return is also low (e.g. SPY, JNJ) and vice versa (e.g. AAPL, CRM). However, DOW is risky but the expected monthly return is not very high. On the other hand, V, UNH and NKE have high expected return compared to their risk profile.</p>
+</div>
+<div id="on-your-own-ibm-hr-analytics" class="section level1">
+<h1>On your own: IBM HR Analytics</h1>
+<p>For this task, you will analyse a data set on Human Resoruce Analytics. The <a href="https://www.kaggle.com/pavansubhasht/ibm-hr-analytics-attrition-dataset">IBM HR Analytics Employee Attrition &amp; Performance data set</a> is a fictional data set created by IBM data scientists. Among other things, the data set includes employees’ income, their distance from work, their position in the company, their level of education, etc. A full description can be found on the website.</p>
+<pre class="r"><code>hr_dataset &lt;- read_csv(&quot;datasets_1067_1925_WA_Fn-UseC_-HR-Employee-Attrition.csv&quot;)</code></pre>
+<pre><code>## Error: &#39;datasets_1067_1925_WA_Fn-UseC_-HR-Employee-Attrition.csv&#39; does not exist in current working directory (&#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/content/projects/project1&#39;).</code></pre>
+<pre class="r"><code>glimpse(hr_dataset)</code></pre>
+<pre><code>## Error in glimpse(hr_dataset): object &#39;hr_dataset&#39; not found</code></pre>
+<p>Clean the data set</p>
+<pre class="r"><code>hr_cleaned &lt;- hr_dataset %&gt;% 
+  clean_names() %&gt;% 
+  mutate(
+    education = case_when(
+      education == 1 ~ &quot;Below College&quot;,
+      education == 2 ~ &quot;College&quot;,
+      education == 3 ~ &quot;Bachelor&quot;,
+      education == 4 ~ &quot;Master&quot;,
+      education == 5 ~ &quot;Doctor&quot;
+    ),
+    environment_satisfaction = case_when(
+      environment_satisfaction == 1 ~ &quot;Low&quot;,
+      environment_satisfaction == 2 ~ &quot;Medium&quot;,
+      environment_satisfaction == 3 ~ &quot;High&quot;,
+      environment_satisfaction == 4 ~ &quot;Very High&quot;
+    ),
+    job_satisfaction = case_when(
+      job_satisfaction == 1 ~ &quot;Low&quot;,
+      job_satisfaction == 2 ~ &quot;Medium&quot;,
+      job_satisfaction == 3 ~ &quot;High&quot;,
+      job_satisfaction == 4 ~ &quot;Very High&quot;
+    ),
+    performance_rating = case_when(
+      performance_rating == 1 ~ &quot;Low&quot;,
+      performance_rating == 2 ~ &quot;Good&quot;,
+      performance_rating == 3 ~ &quot;Excellent&quot;,
+      performance_rating == 4 ~ &quot;Outstanding&quot;
+    ),
+    work_life_balance = case_when(
+      work_life_balance == 1 ~ &quot;Bad&quot;,
+      work_life_balance == 2 ~ &quot;Good&quot;,
+      work_life_balance == 3 ~ &quot;Better&quot;,
+      work_life_balance == 4 ~ &quot;Best&quot;
+    )
+  ) %&gt;% 
+  select(age, attrition, daily_rate, department,
+         distance_from_home, education,
+         gender, job_role,environment_satisfaction,
+         job_satisfaction, marital_status,
+         monthly_income, num_companies_worked, percent_salary_hike,
+         performance_rating, total_working_years,
+         work_life_balance, years_at_company,
+         years_since_last_promotion)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;hr_dataset&#39; not found</code></pre>
+<p>Summary describing this dataset.</p>
+<pre class="r"><code>#1.  Shows often do people leave the company (`attrition`)
+
+attrition_rate&lt;-hr_cleaned %&gt;% 
+  mutate(people_leave=ifelse(attrition==&quot;Yes&quot;,1,0))%&gt;% 
+  summarize(attrition_rate=sum(people_leave)/count(hr_cleaned))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;hr_cleaned&#39; not found</code></pre>
+<pre class="r"><code>#2. Shows how `age`, `years_at_company`, `monthly_income` and `years_since_last_promotion` distributed. Looking at the summary statistics, we can see &quot;Age&quot; is the variable closer to normal distribution since its mean and median are closer together.
+
+summary(hr_cleaned %&gt;% 
+  select(age,years_at_company,monthly_income,years_since_last_promotion))</code></pre>
+<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;hr_cleaned&#39; not found</code></pre>
+<pre class="r"><code>#3. Shows how `job_satisfaction` and `work_life_balance` distributed. 
+
+hr_cleaned %&gt;% 
+  group_by(job_satisfaction) %&gt;% 
+  summarise(total= n()) %&gt;% 
+  mutate(percentage_of_total = total / sum(total))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;hr_cleaned&#39; not found</code></pre>
+<pre class="r"><code>hr_cleaned %&gt;% 
+  group_by(work_life_balance) %&gt;% 
+  summarise(total= n()) %&gt;% 
+  mutate(percentage_of_total = total / sum(total))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;hr_cleaned&#39; not found</code></pre>
+<pre class="r"><code>#4. Relationship between monthly income and education, as well as monthly income and gender. Individuals with a masters or doctorate have higher incomes than those with other degrees. Females tend to receive slightly higher monthly income.
+
+hr_cleaned %&gt;% 
+  ggplot(aes(x= education , y= monthly_income)) +
+   geom_boxplot()+
+   labs(title = &quot;Relationship between monthly income and education&quot;,subtitle =&quot;People with higher education tend to receive higher monthly income&quot;,x = &quot;Education&quot;,y = &quot;Monthly Income&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;hr_cleaned&#39; not found</code></pre>
+<pre class="r"><code>hr_cleaned %&gt;% 
+  ggplot(aes(x= gender , y= monthly_income)) +
+   geom_boxplot()+
+   labs(title = &quot;Relationship between monthly income and gender&quot;,subtitle =&quot;Female tend to recive slightly higher monthly income&quot;,
+    x = &quot;Education&quot;,
+    y = &quot;Monthly Income&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;hr_cleaned&#39; not found</code></pre>
+<pre class="r"><code>#5. Boxplot of income vs job role, in descending order. 
+
+hr_cleaned %&gt;% 
+  ggplot(aes(x= reorder(job_role,-monthly_income) , y=monthly_income )) +
+   geom_boxplot()+
+   theme(axis.text.x=element_text(angle =90))+
+   labs(title = &quot;Relationship between monthly income and job role&quot;,
+    y = &quot;Monthly Income&quot;,
+    x = &quot;Job role&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;hr_cleaned&#39; not found</code></pre>
+<pre class="r"><code>#6. Bar chart of the mean (or median?) income by education level.
+
+mean_income &lt;- hr_cleaned %&gt;% 
+  group_by(education) %&gt;% 
+  summarise(mean_income=mean(monthly_income))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;hr_cleaned&#39; not found</code></pre>
+<pre class="r"><code>ggplot(mean_income, aes(x=reorder(education,-mean_income),y=mean_income))+
+  geom_col()+
+   labs(title = &quot;Relationship between mean monthly income and education level&quot;,
+    y = &quot;Mean Monthly Income&quot;,
+    x = &quot;Education&quot;)</code></pre>
+<pre><code>## Error in ggplot(mean_income, aes(x = reorder(education, -mean_income), : object &#39;mean_income&#39; not found</code></pre>
+<pre class="r"><code>median_income &lt;- hr_cleaned %&gt;% 
+  group_by(education) %&gt;% 
+  summarise(median_income=median(monthly_income))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;hr_cleaned&#39; not found</code></pre>
+<pre class="r"><code>ggplot(median_income, aes(x=reorder(education,-median_income),y=median_income))+
+  geom_col()+
+   labs(title = &quot;Relationship between median monthly income and education level&quot;,
+    y = &quot;Median Monthly Income&quot;,
+    x = &quot;Education&quot;)</code></pre>
+<pre><code>## Error in ggplot(median_income, aes(x = reorder(education, -median_income), : object &#39;median_income&#39; not found</code></pre>
+<pre class="r"><code>#7. The distribution of income by education level.
+
+ggplot(hr_cleaned, aes(x=monthly_income))+
+  geom_density()+
+  facet_wrap(vars(education))+
+  labs(title = &quot;Distribution of monthly income by education level &quot;,
+    x= &quot;Monthly Income&quot;,
+    y=&quot;Density&quot;)</code></pre>
+<pre><code>## Error in ggplot(hr_cleaned, aes(x = monthly_income)): object &#39;hr_cleaned&#39; not found</code></pre>
+<pre class="r"><code>#8. Plot of income vs age, faceted by `job_role`
+
+ggplot(hr_cleaned, aes(x=age,y=monthly_income))+
+  geom_point()+
+  facet_wrap(vars(job_role))+
+  labs(title = &quot;Relationship between monthly income and age by job role &quot;,
+    x= &quot;Age&quot;,
+    y=&quot;Monthly Income&quot;)+scale_x_log10()+
+  scale_y_log10()</code></pre>
+<pre><code>## Error in ggplot(hr_cleaned, aes(x = age, y = monthly_income)): object &#39;hr_cleaned&#39; not found</code></pre>
+</div>
+<div id="challenge-1-replicating-a-chart" class="section level1">
+<h1>Challenge 1: Replicating a chart</h1>
+<p>Figure 3 shows the homicide and suicide rate among white men.</p>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/figure3.jpeg" width="90%" style="display: block; margin: auto;" /></p>
+<p>Creating a replication of figure 3 (homicide and suicide rate among white men).</p>
+<pre><code>## Error in file(file, &quot;rt&quot;): cannot open the connection</code></pre>
+<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;x&#39; in selecting a method for function &#39;head&#39;: object &#39;CDC_males&#39; not found</code></pre>
+<pre><code>## Error in glimpse(CDC_males): object &#39;CDC_males&#39; not found</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;CDC_males&#39; not found</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;CDC_males&#39; not found</code></pre>
+<pre><code>## Error in glimpse(CDC_males_firearm): object &#39;CDC_males_firearm&#39; not found</code></pre>
+<pre><code>## Error in cor.test(CDC_males_firearm$adjusted.homicide.White, CDC_males_firearm$adjusted.suicide.White, : object &#39;CDC_males_firearm&#39; not found</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;spearman_cor&#39; not found</code></pre>
+<pre><code>## Error in ggplot(CDC_males_firearm, aes(x = adjusted.suicide.White, y = adjusted.homicide.White, : object &#39;CDC_males_firearm&#39; not found</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;gg&#39; not found</code></pre>
+</div>
+<div id="challenge-2-2016-california-contributors-plots" class="section level1">
+<h1>Challenge 2: 2016 California Contributors plots</h1>
+<p>Displays a figure we need to reproduce that shows the top ten cities in highest amounts raised in political contributions in California during the 2016 US Presidential election.</p>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/challenge2.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>To get this plot, you must join two dataframes; the one you have with all contributions, and data that can translate zipcodes to cities.
+You can find a file with all US zipcodes, e.g., here <a href="http://www.uszipcodelist.com/download.html" class="uri">http://www.uszipcodelist.com/download.html</a>.</p>
+<p>The easiest way would be to create two plots and then place one next to each other. For this, you will need the <code>patchwork</code> package.
+<a href="https://cran.r-project.org/web/packages/patchwork/index.html" class="uri">https://cran.r-project.org/web/packages/patchwork/index.html</a></p>
+<p>While this is ok, what if one asked you to create the same plot for the top 10 candidates and not just the top two? The most challenging part is how to reorder within categories, and for this you will find Julia Silge’s post on <a href="https://juliasilge.com/blog/reorder-within/">REORDERING AND FACETTING FOR GGPLOT2</a> useful.</p>
+<pre class="r"><code># Make sure you use vroom() as it is significantly faster than read.csv()
+
+CA_contributors_2016 &lt;- vroom::vroom(here::here(&quot;CA_contributors_2016.csv&quot;))</code></pre>
+<pre><code>## Error: &#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/CA_contributors_2016.csv&#39; does not exist.</code></pre>
+<pre class="r"><code>zipcodes_2016 &lt;- vroom::vroom(here::here(&quot;zip_code_database.csv&quot;))</code></pre>
+<pre><code>## Error: &#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/zip_code_database.csv&#39; does not exist.</code></pre>
+<pre class="r"><code># Mutating the zipcodes and merging with CA_contributors_2016 dataset. 
+zipcodes_2016 &lt;- zipcodes_2016 %&gt;%
+    mutate(zip=as.double(zip))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;zipcodes_2016&#39; not found</code></pre>
+<pre class="r"><code>merged_dataframe &lt;- left_join( CA_contributors_2016, zipcodes_2016, by=&quot;zip&quot;)</code></pre>
+<pre><code>## Error in left_join(CA_contributors_2016, zipcodes_2016, by = &quot;zip&quot;): object &#39;CA_contributors_2016&#39; not found</code></pre>
+<pre class="r"><code># Table showing total amount of contribution received by city in descending order. 
+merged_dataframe %&gt;%
+  group_by(primary_city) %&gt;%
+  summarise(total_amount=sum(contb_receipt_amt)) %&gt;% arrange(desc(total_amount)) %&gt;% slice(1:10)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;merged_dataframe&#39; not found</code></pre>
+<pre class="r"><code>library(patchwork)
+library(dplyr)
+
+# Table showing total contributions received by candidate in descending order.
+merged_dataframe %&gt;%
+  group_by(cand_nm) %&gt;%
+  summarise(total_amount=sum(contb_receipt_amt)) %&gt;% arrange(desc(total_amount)) %&gt;% slice(1:10)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;merged_dataframe&#39; not found</code></pre>
+<pre class="r"><code># Table showing the top ten cities where Hillary Clinton received the most contributions.
+CA_2016_Clinton &lt;- merged_dataframe %&gt;% filter(cand_nm == &quot;Clinton, Hillary Rodham&quot;) %&gt;% group_by(primary_city) %&gt;%
+      summarise(total_amount=sum(contb_receipt_amt)) %&gt;% arrange(desc(total_amount)) %&gt;%
+      mutate(primary_city = fct_reorder(primary_city, total_amount))%&gt;%  slice (1:10)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;merged_dataframe&#39; not found</code></pre>
+<pre class="r"><code>CA_2016_Clinton</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;CA_2016_Clinton&#39; not found</code></pre>
+<pre class="r"><code># Table showing the top ten cities where Donald Trump received the most contributions.
+CA_2016_trump &lt;- merged_dataframe %&gt;% filter(cand_nm == &quot;Trump, Donald J.&quot;) %&gt;% group_by(primary_city) %&gt;%
+      summarise(total_amount=sum(contb_receipt_amt)) %&gt;% arrange(desc(total_amount))%&gt;%
+      mutate(primary_city = fct_reorder(primary_city, total_amount))%&gt;%  slice (1:10)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;merged_dataframe&#39; not found</code></pre>
+<pre class="r"><code>CA_2016_trump</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;CA_2016_trump&#39; not found</code></pre>
+<pre class="r"><code># Plot showing the top ten cities where Hillary Clinton received the most contributions in in descending order.
+Plot_clinton&lt;- ggplot(CA_2016_Clinton, aes(x=total_amount, y=primary_city)) + 
+  geom_col()  + 
+  theme_minimal() + 
+  labs(x =&quot;&quot; , y = &quot;&quot;, title = &quot;Clinton, Hillary Rodham&quot;) </code></pre>
+<pre><code>## Error in ggplot(CA_2016_Clinton, aes(x = total_amount, y = primary_city)): object &#39;CA_2016_Clinton&#39; not found</code></pre>
+<pre class="r"><code>Plot_clinton</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;Plot_clinton&#39; not found</code></pre>
+<pre class="r"><code># Plot showing the top ten cities where Donald Trump received the most contributions in in descending order.
+Plot_trump&lt;- ggplot(CA_2016_trump, aes(x=total_amount, y=primary_city)) + 
+  geom_col()  + 
+  theme_minimal() + 
+  labs(x =&quot;&quot; , y = &quot;&quot;, title = &quot;Trump, Donald J.&quot;) </code></pre>
+<pre><code>## Error in ggplot(CA_2016_trump, aes(x = total_amount, y = primary_city)): object &#39;CA_2016_trump&#39; not found</code></pre>
+<pre class="r"><code>Plot_trump</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;Plot_trump&#39; not found</code></pre>
+<pre class="r"><code>library(patchwork)
+
+# Compares the top ten cities where Donald Trump and Hillary Clinton received the most contributions in in descending order, displaying them side by side.
+wrap_plots(Plot_clinton, Plot_trump)</code></pre>
+<pre><code>## Error in is.ggplot(x): object &#39;Plot_clinton&#39; not found</code></pre>
+<pre class="r"><code>library(tidytext)
+
+# Shows the top ten candidates ranked by contributions to their campaigns in descending order. 
+top_cand &lt;- merged_dataframe %&gt;%
+  group_by(cand_nm) %&gt;%
+  summarise(total_amount=sum(contb_receipt_amt)) %&gt;% arrange(desc(total_amount)) %&gt;% slice(1:10)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;merged_dataframe&#39; not found</code></pre>
+<pre class="r"><code>top_cand</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;top_cand&#39; not found</code></pre>
+<pre class="r"><code>top_cand_10 &lt;-merged_dataframe %&gt;%
+    filter(cand_nm %in% top_cand$cand_nm) %&gt;% 
+    group_by(primary_city, cand_nm) %&gt;% 
+    summarise(total_amount =sum(contb_receipt_amt)) %&gt;% 
+    group_by(cand_nm) %&gt;%
+    slice_max(total_amount,n=10) %&gt;% 
+    ungroup %&gt;% 
+    mutate(cand_nm = as.factor(cand_nm),
+    primary_city = reorder_within(primary_city, total_amount, cand_nm)) </code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;merged_dataframe&#39; not found</code></pre>
+<pre class="r"><code># Plots the top ten candidates by contributions received by their campaign across primary cities in descending order.
+Plot_top_10 &lt;- ggplot(top_cand_10, aes(primary_city, total_amount)) +
+    geom_col(show.legend = FALSE) +
+    facet_wrap(~cand_nm, scales = &quot;free&quot;) +
+    coord_flip() +
+    scale_x_reordered() +
+    theme_bw()+
+    scale_y_continuous(expand = c(0,0)) + 
+    theme (axis.title.x = element_blank(), 
+        axis.title.y = element_blank(),
+        axis.text.x = element_text(angle = 90))</code></pre>
+<pre><code>## Error in ggplot(top_cand_10, aes(primary_city, total_amount)): object &#39;top_cand_10&#39; not found</code></pre>
+<pre class="r"><code>Plot_top_10</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;Plot_top_10&#39; not found</code></pre>
+</div>
+<div id="details" class="section level1">
+<h1>Details</h1>
+<ul>
+<li>Who did you collaborate with: Group 12: Chushi Guo, Erkka Salo, Joshua Nemy, Julien Vermeersch, Marta Maccagno, and Raymond Zexin Wu</li>
+<li>Approximately how much time did you spend on this problem set: 14-16 hours cumulative</li>
+<li>What, if anything, gave you the most trouble: Challenge #2 was quite tricky</li>
+</ul>
+</div>

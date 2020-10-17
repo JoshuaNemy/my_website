@@ -117,10 +117,10 @@ disqusShortname = ""
       url = "blogs/norway"
 
     [[params.tiles.showcase]]
-      title = "Portugal"
-      subtitle = "Crossing the Pond"
+      title = "Projects"
+      subtitle = "Data Analytics Project"
       image = "Portugal.JPG"
-      url = "blogs/london"
+      url = "projects/project1"
 
     [[params.tiles.showcase]]
       title = "Football"

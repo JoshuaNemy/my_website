@@ -7,7 +7,7 @@ description: "The Golden Goal"
 draft: false
 image: HockeyCanada.jpg
 keywords: ""
-slug: ipsum
+slug: GoldenGoal
 title: The Golden Goal
 ---
 
@@ -17,4 +17,4 @@ Having the home ice advantage, the anticipation heading into the game was massiv
 
 However, complacency set in, and the Americans scored a goal. As the game was coming to a close, the Americans made a strong last push by pulling their goalie. With 25 seconds left on the clock, Zach Parise scores for the Americans. Watching this moment, I couldn't believe it, and the nation was in shock as we head into overtime to settle the game. 
 
-In overtime, there were chances at both ends, but quick play between Iggy and Crosby created an opening that lead to the Golden Goal, as the team captain puts the puck past the American goalie. I was at home when watching and remember running around the house in celebration. To this day there has been no greater sports moment for me. 
+In overtime, there were chances at both ends, but quick play between Iggy and Crosby created an opening that lead to the Golden Goal, as the team captain puts the puck past the American goalie. I was at home when watching and remember running around the house in celebration. To this day there has been no greater sports moment for me.

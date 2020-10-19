@@ -7,7 +7,7 @@ description: Exchange in Norway
 draft: false
 image: Norway2.JPG
 keywords: ""
-slug: aliquam
+slug: Norway
 title: My adventures in Norway
 ---
 
@@ -18,3 +18,14 @@ When the time came to decide on an exchange destination in my bachelors degree, 
 Over my exchange I met lots of people from different countries, but also learned a lot about the Norwegian culture from my friends at the school. Norway is a more reserved and introverted society when meeting new people, so I joined the "innebandy" or what I viewed as ball hockey team to meet more locals.
 
 My exchange provided many memorable experiences and I developed some life-long friendships with people from the country. The country will always be a second home for me after my experiences.  
+
+---
+
+![](/blogs/blog5_files/Norway3.JPG)
+
+![](/blogs/blog5_files/Norway.JPG)
+
+![](/blogs/blog5_files/Norway4.jpeg)
+
+
+---

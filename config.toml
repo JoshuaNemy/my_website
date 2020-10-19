@@ -82,7 +82,7 @@ disqusShortname = ""
     # To change the background image on the homepage banner, replace 'banner.jpg' in
     # the 'static/img' folder.
     title = "Joshua Nemy"
-    subtitle = "Background into different areas of life"
+    subtitle = "Background into different areas of my life"
     buttonText = "Get Started"
     image = "banner.jpg"
   
@@ -96,13 +96,13 @@ disqusShortname = ""
       title = "Favourite Sports Moment"
       subtitle = "Hockey Night in Canada"
       image = "HockeyCanada.jpg"
-      url = "blogs/ipsum"
+      url = "blogs/GoldenGoal"
 
     [[params.tiles.showcase]]
       title = "Travel"
       subtitle = "Backpacking through Europe"
       image = "Europe.jpg"
-      url = "blogs/blog2"
+      url = "blogs/EuroTrip"
 
     #[[params.tiles.showcase]]
      # title = "Canada"
@@ -114,7 +114,7 @@ disqusShortname = ""
       title = "Norway"
       subtitle = "Meeting a Russian Viking"
       image = "Norway.JPG"
-      url = "blogs/aliquam"
+      url = "blogs/Norway"
 
     [[params.tiles.showcase]]
       title = "Projects"
@@ -126,7 +126,7 @@ disqusShortname = ""
       title = "Football"
       subtitle = "Leeds United and Barcelona"
       image = "Leeds.jpg"
-      url = "pictures/picture1"
+      url = "blogs/sports"
       
     # You can make more showcases by copy and pasting the code above
 

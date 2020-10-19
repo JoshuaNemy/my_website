@@ -2287,9 +2287,8 @@ theme_clean()+
 <p>Before anything, write down the null and alternative hypotheses, as well as the resulting test statistic and the associated t-stat or p-value. At the end of the day, what do you conclude?</p>
 </blockquote>
 <p>We will load the data and examine its structure first.</p>
-<pre class="r"><code>movies &lt;- read_csv(here::here(&quot;data&quot;, &quot;movies.csv&quot;))</code></pre>
-<pre><code>## Error: &#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/data/movies.csv&#39; does not exist.</code></pre>
-<pre class="r"><code>glimpse(movies)</code></pre>
+<pre class="r"><code>movies &lt;- read_csv(here::here(&quot;data&quot;, &quot;movies.csv&quot;))
+glimpse(movies)</code></pre>
 <pre><code>## Rows: 2,961
 ## Columns: 11
 ## $ title               &lt;chr&gt; &quot;Avatar&quot;, &quot;Titanic&quot;, &quot;Jurassic World&quot;, &quot;The Aveng…
@@ -2387,79 +2386,96 @@ movies_boxplot</code></pre>
 <p>At the last board meeting of Omega Group Plc., the headquarters of a large multinational company, the issue was raised that women were being discriminated in the company, in the sense that the salaries were not the same for male and female executives. A quick analysis of a sample of 50 employees (of which 24 men and 26 women) revealed that the average salary for men was about 8,700 higher than for women. This seemed like a considerable difference, so it was decided that a further analysis of the company salaries was warranted.</p>
 <p>The objective is to find out whether there is indeed a significant difference between the salaries of men and women, and whether the difference is due to discrimination or whether it is based on another, possibly valid, determining factor.</p>
 <p>This is used to load the data and view the omega.csv data.</p>
-<pre class="r"><code>omega &lt;- read_csv(here::here(&quot;data&quot;, &quot;omega.csv&quot;))</code></pre>
-<pre><code>## Error: &#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/data/omega.csv&#39; does not exist.</code></pre>
-<pre class="r"><code>glimpse(omega) # examine the data frame</code></pre>
-<pre><code>## Error in glimpse(omega): object &#39;omega&#39; not found</code></pre>
+<pre class="r"><code>omega &lt;- read_csv(here::here(&quot;data&quot;, &quot;omega.csv&quot;))
+glimpse(omega) # examine the data frame</code></pre>
+<pre><code>## Rows: 50
+## Columns: 3
+## $ salary     &lt;dbl&gt; 81894, 69517, 68589, 74881, 65598, 76840, 78800, 70033, 63…
+## $ gender     &lt;chr&gt; &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;m…
+## $ experience &lt;dbl&gt; 16, 25, 15, 33, 16, 19, 32, 34, 1, 44, 7, 14, 33, 19, 24, …</code></pre>
 <div id="relationship-salary---gender" class="section level2">
 <h2>Relationship Salary - Gender</h2>
 <p>Calculated summary statistics on salary by gender. Also, created and printed a dataframe where, for each gender, you show the mean, SD, sample size, the t-critical, the SE, the margin of error, and the low/high endpoints of a 95% confidence interval.</p>
 <pre class="r"><code># Summary Statistics of salary by gender
 mosaic::favstats (salary ~ gender, data=omega)</code></pre>
-<pre><code>## Error in mosaic::favstats(salary ~ gender, data = omega): object &#39;omega&#39; not found</code></pre>
+<pre><code>##   gender   min    Q1 median    Q3   max  mean   sd  n missing
+## 1 female 47033 60338  64618 70033 78800 64543 7567 26       0
+## 2   male 54768 68331  74675 78568 84576 73239 7463 24       0</code></pre>
 <pre class="r"><code># Dataframe with two rows (male-female) and having as columns gender, mean, SD, sample size, 
 # the t-critical value, the standard error, the margin of error, 
 # and the low/high endpoints of a 95% confidence interval
 
-subset_female = omega[which(omega $ gender == &quot;female&quot;),]</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;omega&#39; not found</code></pre>
-<pre class="r"><code>subset_male = omega[which(omega $ gender == &quot;male&quot;),]</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;omega&#39; not found</code></pre>
-<pre class="r"><code>sd_female = sd(subset_female $ salary)</code></pre>
-<pre><code>## Error in rlang::is_formula(x): object &#39;subset_female&#39; not found</code></pre>
-<pre class="r"><code>sd_male = sd(subset_male $ salary)</code></pre>
-<pre><code>## Error in rlang::is_formula(x): object &#39;subset_male&#39; not found</code></pre>
-<pre class="r"><code>mean_female = mean(subset_female $ salary)</code></pre>
-<pre><code>## Error in mean(subset_female$salary): object &#39;subset_female&#39; not found</code></pre>
-<pre class="r"><code>mean_male = mean(subset_male $ salary)</code></pre>
-<pre><code>## Error in mean(subset_male$salary): object &#39;subset_male&#39; not found</code></pre>
-<pre class="r"><code>n_female = length(subset_female $ salary)</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;subset_female&#39; not found</code></pre>
-<pre class="r"><code>n_male = length(subset_male $ salary)</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;subset_male&#39; not found</code></pre>
-<pre class="r"><code>margin_error = 0.05
+subset_female = omega[which(omega $ gender == &quot;female&quot;),]
+subset_male = omega[which(omega $ gender == &quot;male&quot;),]
+
+sd_female = sd(subset_female $ salary)
+sd_male = sd(subset_male $ salary)
+
+mean_female = mean(subset_female $ salary)
+mean_male = mean(subset_male $ salary)
+
+n_female = length(subset_female $ salary)
+n_male = length(subset_male $ salary)
+
+margin_error = 0.05
 t_critical = 1.66
 
-standard_error = sqrt((sd_female^2 / n_female) + (sd_male^2 / n_male))</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;sd_female&#39; not found</code></pre>
-<pre class="r"><code>t_statistic = (mean_female - mean_male) / standard_error</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_female&#39; not found</code></pre>
-<pre class="r"><code>observed_difference = mean_female - mean_male</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_female&#39; not found</code></pre>
-<pre class="r"><code>lb_95_CI = observed_difference - 2 * standard_error</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;observed_difference&#39; not found</code></pre>
-<pre class="r"><code>ub_95_CI = observed_difference + 2 * standard_error</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;observed_difference&#39; not found</code></pre>
-<pre class="r"><code>summary_stats &lt;- data.frame(gender = c(&quot;female&quot;, &quot;male&quot;), mean = c(mean_female, mean_male), SD = c(sd_female, sd_male), sample_size = c(n_female, n_male), t_critical = c(t_critical, t_critical), standard_error = c(standard_error, standard_error), margin_error = c(margin_error, margin_error), lb_95_CI = c(lb_95_CI, lb_95_CI), ub_95_CI = c(ub_95_CI, ub_95_CI))</code></pre>
-<pre><code>## Error in data.frame(gender = c(&quot;female&quot;, &quot;male&quot;), mean = c(mean_female, : object &#39;mean_female&#39; not found</code></pre>
-<pre class="r"><code>summary_stats</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;summary_stats&#39; not found</code></pre>
+standard_error = sqrt((sd_female^2 / n_female) + (sd_male^2 / n_male))
+t_statistic = (mean_female - mean_male) / standard_error
+
+observed_difference = mean_female - mean_male
+lb_95_CI = observed_difference - 2 * standard_error
+ub_95_CI = observed_difference + 2 * standard_error
+
+summary_stats &lt;- data.frame(gender = c(&quot;female&quot;, &quot;male&quot;), mean = c(mean_female, mean_male), SD = c(sd_female, sd_male), sample_size = c(n_female, n_male), t_critical = c(t_critical, t_critical), standard_error = c(standard_error, standard_error), margin_error = c(margin_error, margin_error), lb_95_CI = c(lb_95_CI, lb_95_CI), ub_95_CI = c(ub_95_CI, ub_95_CI))
+
+
+summary_stats</code></pre>
+<pre><code>##   gender  mean   SD sample_size t_critical standard_error margin_error lb_95_CI
+## 1 female 64543 7567          26       1.66           2127         0.05   -12950
+## 2   male 73239 7463          24       1.66           2127         0.05   -12950
+##   ub_95_CI
+## 1    -4443
+## 2    -4443</code></pre>
 <p>After testing the null hypothesis of whether mean males salary equals mean females salary, we calculated a t-stat of approx 4, which is greater than the critical value of 1.66 with a 5% margin of error.</p>
 <p>As a result, we can reject the null hypothesis which means that the difference in mean salary estimated is different form zero.</p>
 <p>With a 95% confidence interval, the difference between females’ and males’ mean salary is 12973 - 4443 = 8696.</p>
 <p>We also can run a hypothesis testing, assuming as a null hypothesis that the mean difference in salaries is zero, or that, on average, men and women make the same amount of money. We run the hypothesis testing using <code>t.test()</code> and with the simulation method from the <code>infer</code> package.</p>
 <pre class="r"><code># hypothesis testing using t.test() 
 t.test(salary ~ gender, data = omega)</code></pre>
-<pre><code>## Error in eval(m$data, parent.frame()): object &#39;omega&#39; not found</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  salary by gender
+## t = -4, df = 48, p-value = 2e-04
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -12973  -4420
+## sample estimates:
+## mean in group female   mean in group male 
+##                64543                73239</code></pre>
 <pre class="r"><code># hypothesis testing using infer package
 set.seed(123)
 
 obs_stats &lt;- omega %&gt;% 
   specify(salary ~ gender) %&gt;%
-  calculate(stat = &quot;diff in means&quot;)</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;omega&#39; not found</code></pre>
-<pre class="r"><code>salaries_null_hyp &lt;- omega %&gt;%
+  calculate(stat = &quot;diff in means&quot;)
+
+salaries_null_hyp &lt;- omega %&gt;%
   specify(salary ~ gender) %&gt;%
   hypothesize(null = &quot;independence&quot;) %&gt;%
   generate(reps = 1000, type = &quot;permute&quot;) %&gt;%
-  calculate(stat = &quot;diff in means&quot;, order = c(&quot;female&quot;, &quot;male&quot;))</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;omega&#39; not found</code></pre>
-<pre class="r"><code>salaries_null_hyp %&gt;% 
+  calculate(stat = &quot;diff in means&quot;, order = c(&quot;female&quot;, &quot;male&quot;))
+
+salaries_null_hyp %&gt;% 
   visualize(bins = 20, method = &quot;simulation&quot;, obs_stats = obs_stats)</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;salaries_null_hyp&#39; not found</code></pre>
+<p><img src="index_files/figure-html/hypothesis_testing-1.png" width="648" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>salaries_null_hyp %&gt;%
   get_p_value(obs_stats, direction = &quot;both&quot;)</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;salaries_null_hyp&#39; not found</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   p_value
+##     &lt;dbl&gt;
+## 1       0</code></pre>
 <p>From looking at both the t test and infer package, we can see that the probability of there being a difference between males and females salary is not equal to 0. Looking at the null distribution, it is clear that the difference between means of 8696 is on the tail of the distribution and an extreme value. We can also conclude that the difference is statistically significant when viewing the p value.</p>
 </div>
 <div id="relationship-experience---gender" class="section level2">
@@ -2467,7 +2483,9 @@ obs_stats &lt;- omega %&gt;%
 <p>At the board meeting, someone raised the issue that there was indeed a substantial difference between male and female salaries, but that this was attributable to other reasons such as differences in experience. A questionnaire send out to the 50 executives in the sample reveals that the average experience of the men is approximately 21 years, whereas the women only have about 7 years experience on average (see table below).</p>
 <pre class="r"><code># Summary Statistics of salary by gender
 favstats (experience ~ gender, data=omega)</code></pre>
-<pre><code>## Error in favstats(experience ~ gender, data = omega): object &#39;omega&#39; not found</code></pre>
+<pre><code>##   gender min    Q1 median   Q3 max  mean    sd  n missing
+## 1 female   0  0.25    3.0 14.0  29  7.38  8.51 26       0
+## 2   male   1 15.75   19.5 31.2  44 21.12 10.92 24       0</code></pre>
 <p>Based on this evidence, can you conclude that there is a significant difference between the experience of the male and female executives? Perform similar analyses as in the previous section. Does your conclusion validate or endanger your conclusion about the difference in male and female salaries?</p>
 </div>
 <div id="relationship-salary---experience" class="section level2">
@@ -2476,26 +2494,39 @@ favstats (experience ~ gender, data=omega)</code></pre>
 <p>Analyzed the relationship between salary and experience and drew a scatterplot to visually inspect the data</p>
 <pre class="r"><code># hypothesis testing using t.test() 
 t.test(experience ~ gender, data = omega)</code></pre>
-<pre><code>## Error in eval(m$data, parent.frame()): object &#39;omega&#39; not found</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  experience by gender
+## t = -5, df = 43, p-value = 1e-05
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -19.35  -8.13
+## sample estimates:
+## mean in group female   mean in group male 
+##                 7.38                21.12</code></pre>
 <pre class="r"><code># hypothesis testing using infer package
 set.seed(1234)
 
 obs_stat &lt;- omega %&gt;% 
   specify(experience ~ gender) %&gt;%
-  calculate(stat = &quot;diff in means&quot;)</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;omega&#39; not found</code></pre>
-<pre class="r"><code>salaries_in_null_world &lt;- omega %&gt;%
+  calculate(stat = &quot;diff in means&quot;)
+
+salaries_in_null_world &lt;- omega %&gt;%
   specify(experience ~ gender) %&gt;%
   hypothesize(null = &quot;independence&quot;) %&gt;%
   generate(reps = 1000, type = &quot;permute&quot;) %&gt;%
-  calculate(stat = &quot;diff in means&quot;, order = c(&quot;female&quot;, &quot;male&quot;))</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;omega&#39; not found</code></pre>
-<pre class="r"><code>salaries_in_null_world %&gt;% 
+  calculate(stat = &quot;diff in means&quot;, order = c(&quot;female&quot;, &quot;male&quot;))
+
+salaries_in_null_world %&gt;% 
   visualize(bins = 20, method = &quot;simulation&quot;, obs_stat = obs_stat)</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;salaries_in_null_world&#39; not found</code></pre>
+<p><img src="index_files/figure-html/salary_exp_scatter-1.png" width="648" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>salaries_in_null_world %&gt;%
   get_p_value(obs_stat, direction = &quot;both&quot;)</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;salaries_in_null_world&#39; not found</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   p_value
+##     &lt;dbl&gt;
+## 1       0</code></pre>
 <p>Using the two methods, the difference is statistically significant at the 95% confidence interval. The findings do not endanger the previous conclusion regarding differences in male and female salaries, since the experience may not being impacting salary. We must first conduct an analysis on the relationship between salary and experience to understand the implication.</p>
 </div>
 <div id="check-correlations-between-the-data" class="section level2">
@@ -2505,7 +2536,7 @@ obs_stat &lt;- omega %&gt;%
   select(gender, experience, salary) %&gt;% #order variables they will appear in ggpairs()
   ggpairs(aes(colour=gender, alpha = 0.3))+
   theme_bw()</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;omega&#39; not found</code></pre>
+<pre><code>## Error in ggpairs(., aes(colour = gender, alpha = 0.3)): could not find function &quot;ggpairs&quot;</code></pre>
 <p>There appears to a larger amount of women entering the workplace recently, while the number slowly decreases until there are no female representation on the more experienced end of the plot. Reasons may be since pregnancy poses career trade-offs for women, preference to focus on more of a caretaker role at later stages in life, or ceilings in the workplace. As both genders gain further experience, the deviation in salary to experience is less apparent compared to men who have more fluctuation in the salary at particular experience levels.</p>
 </div>
 </div>

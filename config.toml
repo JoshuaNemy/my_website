@@ -33,7 +33,7 @@ disqusShortname = ""
   # 404 error customization
   [params.error404]
     heading = "Page couldn't be found"
-    text = "Please visit [this page](/)"
+    #text = "Please visit [this page](/)"
 
   # Navigation Section
   [params.navigation]
@@ -93,28 +93,28 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "Sports"
+      title = "Favourite Sports Moment"
       subtitle = "Hockey Night in Canada"
       image = "HockeyCanada.jpg"
-      url = "blogs/sports"
+      url = "blogs/ipsum"
 
     [[params.tiles.showcase]]
       title = "Travel"
       subtitle = "Backpacking through Europe"
       image = "Europe.jpg"
-      url = "blogs/travel"
+      url = "blogs/blog2"
 
-    [[params.tiles.showcase]]
-      title = "Canada"
-      subtitle = "Live as a Canuk"
-      image = "Canada.jpeg"
-      url = "blogs/canada"
+    #[[params.tiles.showcase]]
+     # title = "Canada"
+      #subtitle = "Live as a Canuk"
+      #image = "Canada.jpeg"
+      #url = "blogs/blog3"
 
     [[params.tiles.showcase]]
       title = "Norway"
       subtitle = "Meeting a Russian Viking"
       image = "Norway.JPG"
-      url = "blogs/norway"
+      url = "blogs/blog5"
 
     [[params.tiles.showcase]]
       title = "Projects"
@@ -126,7 +126,8 @@ disqusShortname = ""
       title = "Football"
       subtitle = "Leeds United and Barcelona"
       image = "Leeds.jpg"
-      url = "blogs/football"
+      url = "pictures/picture1"
+      
     # You can make more showcases by copy and pasting the code above
 
   [params.blog]

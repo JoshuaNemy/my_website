@@ -1,3 +1,7 @@
+---
+site: blogdown:::blogdown_site
+---
+
 
 
 <div id="where-do-people-drink-the-most-beer-wine-and-spirits" class="section level1">
@@ -170,7 +174,7 @@ alcohol_direct &lt;- read_csv(&quot;https://raw.githubusercontent.com/fivethirty
   theme(plot.title = element_text(vjust = 1, size = 5),axis.text.x = element_text(angle = 90))+
   labs(title = &quot;Top 25 Beer Consuming Countries&quot;, x= &quot;Countries&quot;, y= &quot;Beer Servings&quot; )+
   NULL</code></pre>
-<p><img src="Assignment1-StreamA-Group12_files/figure-html/beer_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="index_files/figure-html/beer_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
 <p>Plot that shows the top 25 wine consuming countries</p>
 <pre class="r"><code>top_25_wine &lt;- glimpse(alcohol_direct) %&gt;%
   arrange(desc(wine_servings)) %&gt;% 
@@ -188,7 +192,7 @@ alcohol_direct &lt;- read_csv(&quot;https://raw.githubusercontent.com/fivethirty
   theme(plot.title = element_text(vjust = 1, size = 5),axis.text.x = element_text(angle = 90))+
   labs(title = &quot;Top 25 Wine Consuming Countries&quot;, x= &quot;Countries&quot;, y= &quot;Wine Servings&quot; )+
   NULL</code></pre>
-<p><img src="Assignment1-StreamA-Group12_files/figure-html/wine_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="index_files/figure-html/wine_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
 <p>Plot that shows the top 25 spirit consuming countries</p>
 <pre class="r"><code>top_25_spirit &lt;- glimpse(alcohol_direct) %&gt;%
   arrange(desc(spirit_servings)) %&gt;% 
@@ -206,7 +210,7 @@ alcohol_direct &lt;- read_csv(&quot;https://raw.githubusercontent.com/fivethirty
   theme(plot.title = element_text(vjust = 1, size = 5),axis.text.x = element_text(angle = 90))+
   labs(title = &quot;Top 25 Spirit Consuming Countries&quot;, x= &quot;Countries&quot;, y= &quot;Spirit Servings&quot; )+
   NULL</code></pre>
-<p><img src="Assignment1-StreamA-Group12_files/figure-html/spirit_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="index_files/figure-html/spirit_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
 <p>The graphs depict that, on average, Namibians consumer the most beer, the French consume the most wine, and Grenadians consume the most spirits. These results may be a consequence of availability of particular ingredients (sugarcane,hops, barley, grapes), implications of specific climates, or cultural influences. Other countries have increasingly stringent or relaxed regulations on the different types of alcohol which alter the consumption habits of consumers.</p>
 </div>
 <div id="analysis-of-movies--imdb-dataset" class="section level1">
@@ -396,7 +400,7 @@ summarise_monthly_returns</code></pre>
   labs(title = &quot;Density plot of the distribution of monthly returns&quot;,
     y = &quot;Density&quot;, x = &quot;Monthly Returns&quot;) +
     theme(plot.title = element_text(hjust = 0.5, size = 12, face = &quot;bold&quot;))</code></pre>
-<p><img src="Assignment1-StreamA-Group12_files/figure-html/density_monthly_returns-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="index_files/figure-html/density_monthly_returns-1.png" width="648" style="display: block; margin: auto;" /></p>
 <p>We can infer from the plot that the “SPY” is the lest risky since the monthly return distribution is the most narrow, whereas the “DOW” has the widest distribution making it the most risky.</p>
 <p>Plot that shows the expected monthly return (mean) of a stock on the Y axis and the risk (standard deviation) in the X-axis.</p>
 <pre class="r"><code>myStocks_returns_monthly %&gt;% 
@@ -410,7 +414,7 @@ summarise_monthly_returns</code></pre>
     y = &quot;Expected monthly returns&quot;,
     x = &quot;Risk&quot;) +
     theme(plot.title = element_text(hjust = 0.5, size = 10, face = &quot;bold&quot;))</code></pre>
-<p><img src="Assignment1-StreamA-Group12_files/figure-html/risk_return_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="index_files/figure-html/risk_return_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
 <p>From this plot we can say that usually when the risk is low the expected monthly return is also low (e.g. SPY, JNJ) and vice versa (e.g. AAPL, CRM). However, DOW is risky but the expected monthly return is not very high. On the other hand, V, UNH and NKE have high expected return compared to their risk profile.</p>
 </div>
 <div id="on-your-own-ibm-hr-analytics" class="section level1">

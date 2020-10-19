@@ -114,7 +114,7 @@ disqusShortname = ""
       title = "Norway"
       subtitle = "Meeting a Russian Viking"
       image = "Norway.JPG"
-      url = "blogs/blog5"
+      url = "blogs/aliquam"
 
     [[params.tiles.showcase]]
       title = "Projects"

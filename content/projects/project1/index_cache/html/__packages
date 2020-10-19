@@ -31,3 +31,5 @@ tidyquant
 xml2
 rvest
 ggrepel
+infer
+wbstats

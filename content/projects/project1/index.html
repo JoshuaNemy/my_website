@@ -1001,114 +1001,1975 @@ ggplot(hr_cleaned, aes(x=age,y=monthly_income))+
 ## $ average.pop.white       &lt;dbl&gt; 252734, 1585291, 1083003, 1882345, 7703022, 1…</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="648" style="display: block; margin: auto;" /></p>
 </div>
-<div id="challenge-2-2016-california-contributors-plots" class="section level1">
-<h1>Challenge 2: 2016 California Contributors plots</h1>
-<p>Displays a figure we need to reproduce that shows the top ten cities in highest amounts raised in political contributions in California during the 2016 US Presidential election.</p>
-<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/challenge2.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>To get this plot, you must join two dataframes; the one you have with all contributions, and data that can translate zipcodes to cities.
-You can find a file with all US zipcodes, e.g., here <a href="http://www.uszipcodelist.com/download.html" class="uri">http://www.uszipcodelist.com/download.html</a>.</p>
-<p>The easiest way would be to create two plots and then place one next to each other. For this, you will need the <code>patchwork</code> package.
-<a href="https://cran.r-project.org/web/packages/patchwork/index.html" class="uri">https://cran.r-project.org/web/packages/patchwork/index.html</a></p>
-<p>While this is ok, what if one asked you to create the same plot for the top 10 candidates and not just the top two? The most challenging part is how to reorder within categories, and for this you will find Julia Silge’s post on <a href="https://juliasilge.com/blog/reorder-within/">REORDERING AND FACETTING FOR GGPLOT2</a> useful.</p>
-<pre class="r"><code># Make sure you use vroom() as it is significantly faster than read.csv()
-
-CA_contributors_2016 &lt;- vroom::vroom(here::here(&quot;CA_contributors_2016.csv&quot;))</code></pre>
-<pre><code>## Error: &#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/CA_contributors_2016.csv&#39; does not exist.</code></pre>
-<pre class="r"><code>zipcodes_2016 &lt;- vroom::vroom(here::here(&quot;zip_code_database.csv&quot;))</code></pre>
-<pre><code>## Error: &#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/zip_code_database.csv&#39; does not exist.</code></pre>
-<pre class="r"><code># Mutating the zipcodes and merging with CA_contributors_2016 dataset. 
-zipcodes_2016 &lt;- zipcodes_2016 %&gt;%
-    mutate(zip=as.double(zip))</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;zipcodes_2016&#39; not found</code></pre>
-<pre class="r"><code>merged_dataframe &lt;- left_join( CA_contributors_2016, zipcodes_2016, by=&quot;zip&quot;)</code></pre>
-<pre><code>## Error in left_join(CA_contributors_2016, zipcodes_2016, by = &quot;zip&quot;): object &#39;CA_contributors_2016&#39; not found</code></pre>
-<pre class="r"><code># Table showing total amount of contribution received by city in descending order. 
-merged_dataframe %&gt;%
-  group_by(primary_city) %&gt;%
-  summarise(total_amount=sum(contb_receipt_amt)) %&gt;% arrange(desc(total_amount)) %&gt;% slice(1:10)</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;merged_dataframe&#39; not found</code></pre>
-<pre class="r"><code>library(patchwork)
-library(dplyr)
-
-# Table showing total contributions received by candidate in descending order.
-merged_dataframe %&gt;%
-  group_by(cand_nm) %&gt;%
-  summarise(total_amount=sum(contb_receipt_amt)) %&gt;% arrange(desc(total_amount)) %&gt;% slice(1:10)</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;merged_dataframe&#39; not found</code></pre>
-<pre class="r"><code># Table showing the top ten cities where Hillary Clinton received the most contributions.
-CA_2016_Clinton &lt;- merged_dataframe %&gt;% filter(cand_nm == &quot;Clinton, Hillary Rodham&quot;) %&gt;% group_by(primary_city) %&gt;%
-      summarise(total_amount=sum(contb_receipt_amt)) %&gt;% arrange(desc(total_amount)) %&gt;%
-      mutate(primary_city = fct_reorder(primary_city, total_amount))%&gt;%  slice (1:10)</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;merged_dataframe&#39; not found</code></pre>
-<pre class="r"><code>CA_2016_Clinton</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;CA_2016_Clinton&#39; not found</code></pre>
-<pre class="r"><code># Table showing the top ten cities where Donald Trump received the most contributions.
-CA_2016_trump &lt;- merged_dataframe %&gt;% filter(cand_nm == &quot;Trump, Donald J.&quot;) %&gt;% group_by(primary_city) %&gt;%
-      summarise(total_amount=sum(contb_receipt_amt)) %&gt;% arrange(desc(total_amount))%&gt;%
-      mutate(primary_city = fct_reorder(primary_city, total_amount))%&gt;%  slice (1:10)</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;merged_dataframe&#39; not found</code></pre>
-<pre class="r"><code>CA_2016_trump</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;CA_2016_trump&#39; not found</code></pre>
-<pre class="r"><code># Plot showing the top ten cities where Hillary Clinton received the most contributions in in descending order.
-Plot_clinton&lt;- ggplot(CA_2016_Clinton, aes(x=total_amount, y=primary_city)) + 
-  geom_col()  + 
-  theme_minimal() + 
-  labs(x =&quot;&quot; , y = &quot;&quot;, title = &quot;Clinton, Hillary Rodham&quot;) </code></pre>
-<pre><code>## Error in ggplot(CA_2016_Clinton, aes(x = total_amount, y = primary_city)): object &#39;CA_2016_Clinton&#39; not found</code></pre>
-<pre class="r"><code>Plot_clinton</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;Plot_clinton&#39; not found</code></pre>
-<pre class="r"><code># Plot showing the top ten cities where Donald Trump received the most contributions in in descending order.
-Plot_trump&lt;- ggplot(CA_2016_trump, aes(x=total_amount, y=primary_city)) + 
-  geom_col()  + 
-  theme_minimal() + 
-  labs(x =&quot;&quot; , y = &quot;&quot;, title = &quot;Trump, Donald J.&quot;) </code></pre>
-<pre><code>## Error in ggplot(CA_2016_trump, aes(x = total_amount, y = primary_city)): object &#39;CA_2016_trump&#39; not found</code></pre>
-<pre class="r"><code>Plot_trump</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;Plot_trump&#39; not found</code></pre>
-<pre class="r"><code>library(patchwork)
-
-# Compares the top ten cities where Donald Trump and Hillary Clinton received the most contributions in in descending order, displaying them side by side.
-wrap_plots(Plot_clinton, Plot_trump)</code></pre>
-<pre><code>## Error in is.ggplot(x): object &#39;Plot_clinton&#39; not found</code></pre>
-<pre class="r"><code>library(tidytext)
-
-# Shows the top ten candidates ranked by contributions to their campaigns in descending order. 
-top_cand &lt;- merged_dataframe %&gt;%
-  group_by(cand_nm) %&gt;%
-  summarise(total_amount=sum(contb_receipt_amt)) %&gt;% arrange(desc(total_amount)) %&gt;% slice(1:10)</code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;merged_dataframe&#39; not found</code></pre>
-<pre class="r"><code>top_cand</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;top_cand&#39; not found</code></pre>
-<pre class="r"><code>top_cand_10 &lt;-merged_dataframe %&gt;%
-    filter(cand_nm %in% top_cand$cand_nm) %&gt;% 
-    group_by(primary_city, cand_nm) %&gt;% 
-    summarise(total_amount =sum(contb_receipt_amt)) %&gt;% 
-    group_by(cand_nm) %&gt;%
-    slice_max(total_amount,n=10) %&gt;% 
-    ungroup %&gt;% 
-    mutate(cand_nm = as.factor(cand_nm),
-    primary_city = reorder_within(primary_city, total_amount, cand_nm)) </code></pre>
-<pre><code>## Error in eval(lhs, parent, parent): object &#39;merged_dataframe&#39; not found</code></pre>
-<pre class="r"><code># Plots the top ten candidates by contributions received by their campaign across primary cities in descending order.
-Plot_top_10 &lt;- ggplot(top_cand_10, aes(primary_city, total_amount)) +
-    geom_col(show.legend = FALSE) +
-    facet_wrap(~cand_nm, scales = &quot;free&quot;) +
-    coord_flip() +
-    scale_x_reordered() +
-    theme_bw()+
-    scale_y_continuous(expand = c(0,0)) + 
-    theme (axis.title.x = element_blank(), 
-        axis.title.y = element_blank(),
-        axis.text.x = element_text(angle = 90))</code></pre>
-<pre><code>## Error in ggplot(top_cand_10, aes(primary_city, total_amount)): object &#39;top_cand_10&#39; not found</code></pre>
-<pre class="r"><code>Plot_top_10</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;Plot_top_10&#39; not found</code></pre>
-</div>
 <div id="details" class="section level1">
 <h1>Details</h1>
 <ul>
 <li>Who did you collaborate with: Group 12: Chushi Guo, Erkka Salo, Joshua Nemy, Julien Vermeersch, Marta Maccagno, and Raymond Zexin Wu</li>
-<li>Approximately how much time did you spend on this problem set: 14-16 hours cumulative</li>
-<li>What, if anything, gave you the most trouble: Challenge #2 was quite tricky</li>
+</ul>
+</div>
+<div id="climate-change-and-temperature-anomalies" class="section level1">
+<h1>Climate change and temperature anomalies</h1>
+<p>If we wanted to study climate change, we can find data on the <em>Combined Land-Surface Air and Sea-Surface Water Temperature Anomalies</em> in the Northern Hemisphere at <a href="https://data.giss.nasa.gov/gistemp">NASA’s Goddard Institute for Space Studies</a>. The <a href="https://data.giss.nasa.gov/gistemp/tabledata_v3/NH.Ts+dSST.txt">tabular data of temperature anomalies can be found here</a></p>
+<p>To define temperature anomalies you need to have a reference, or base, period which NASA clearly states that it is the period between 1951-1980.</p>
+<p>Run the code below to load the file:</p>
+<pre class="r"><code>weather &lt;- 
+  read_csv(&quot;https://data.giss.nasa.gov/gistemp/tabledata_v3/NH.Ts+dSST.csv&quot;, 
+           skip = 1, 
+           na = &quot;***&quot;)</code></pre>
+<p>Notice that, when using this function, we added two options: <code>skip</code> and <code>na</code>.</p>
+<ol style="list-style-type: decimal">
+<li>The <code>skip=1</code> option is there as the real data table only starts in Row 2, so we need to skip one row.</li>
+<li><code>na = "***"</code> option informs R how missing observations in the spreadsheet are coded. When looking at the spreadsheet, you can see that missing data is coded as "***". It is best to specify this here, as otherwise some of the data is not recognized as numeric data.</li>
+</ol>
+<p>Once the data is loaded, notice that there is a object titled <code>weather</code> in the <code>Environment</code> panel. If you cannot see the panel (usually on the top-right), go to <code>Tools</code> &gt; <code>Global Options</code> &gt; <code>Pane Layout</code> and tick the checkbox next to <code>Environment</code>. Click on the <code>weather</code> object, and the dataframe will pop up on a seperate tab. Inspect the dataframe.</p>
+<p>For each month and year, the dataframe shows the deviation of temperature from the normal (expected). Further the dataframe is in wide format.</p>
+<p>You have two objectives in this section:</p>
+<ol style="list-style-type: decimal">
+<li><p>Select the year and the twelve month variables from the <code>weather</code> dataset. We do not need the others (J-D, D-N, DJF, etc.) for this assignment. Hint: use <code>select()</code> function.</p></li>
+<li><p>Convert the dataframe from wide to ‘long’ format. Hint: use <code>gather()</code> or <code>pivot_longer()</code> function. Name the new dataframe as <code>tidyweather</code>, name the variable containing the name of the month as <code>month</code>, and the temperature deviation values as <code>delta</code>.</p></li>
+</ol>
+<pre class="r"><code>tidyweather &lt;- weather %&gt;% 
+        select(Year:Dec) %&gt;%
+        pivot_longer(cols=2:13, names_to=&quot;Month&quot;, values_to=&quot;delta&quot;)</code></pre>
+<p>Inspect your dataframe. It should have three variables now, one each for</p>
+<ol style="list-style-type: decimal">
+<li>year,</li>
+<li>month, and</li>
+<li>delta, or temperature deviation.</li>
+</ol>
+<div id="plotting-information" class="section level2">
+<h2>Plotting Information</h2>
+<p>Let us plot the data using a time-series scatter plot, and add a trendline. To do that, we first need to create a new variable called <code>date</code> in order to ensure that the <code>delta</code> values are plot chronologically.</p>
+<blockquote>
+<p>In the following chunk of code, I used the <code>eval=FALSE</code> argument, which does not run a chunk of code; I did so that you can knit the document before tidying the data and creating a new dataframe <code>tidyweather</code>. When you actually want to run this code and knit your document, you must delete <code>eval=FALSE</code>, <strong>not just here but in all chunks were <code>eval=FALSE</code> appears.</strong></p>
+</blockquote>
+<pre class="r"><code>tidyweather &lt;- tidyweather %&gt;%
+  mutate(date = ymd(paste(as.character(Year), Month, &quot;1&quot;)),
+         month = month(date, label=TRUE),
+         year = year(date))
+
+ggplot(tidyweather, aes(x=date, y = delta))+
+  geom_point()+
+  geom_smooth(color=&quot;red&quot;) +
+  theme_bw() +
+  labs (
+    title = &quot;Weather Anomalies&quot;
+  )</code></pre>
+<p><img src="index_files/figure-html/scatter_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>Is the effect of increasing temperature more pronounced in some months? Use <code>facet_wrap()</code> to produce a seperate scatter plot for each month, again with a smoothing line. Your chart should human-readable labels; that is, each month should be labeled “Jan”, “Feb”, “Mar” (full or abbreviated month names are fine), not <code>1</code>, <code>2</code>, <code>3</code>.</p>
+<p><img src="index_files/figure-html/facet_wrap-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>It is sometimes useful to group data into different time periods to study historical data. For example, we often refer to decades such as 1970s, 1980s, 1990s etc. to refer to a period of time. NASA calcuialtes a temperature anomaly, as difference form the base periof of 1951-1980. The code below creates a new data frame called <code>comparison</code> that groups data in five time periods: 1881-1920, 1921-1950, 1951-1980, 1981-2010 and 2011-present.</p>
+<p>We remove data before 1800 and before using <code>filter</code>. Then, we use the <code>mutate</code> function to create a new variable <code>interval</code> which contains information on which period each observation belongs to. We can assign the different periods using <code>case_when()</code>.</p>
+<pre class="r"><code>comparison &lt;- tidyweather %&gt;% 
+  filter(Year&gt;= 1881) %&gt;%     #remove years prior to 1881
+  #create new variable &#39;interval&#39;, and assign values based on criteria below:
+  mutate(interval = case_when(
+    Year %in% c(1881:1920) ~ &quot;1881-1920&quot;,
+    Year %in% c(1921:1950) ~ &quot;1921-1950&quot;,
+    Year %in% c(1951:1980) ~ &quot;1951-1980&quot;,
+    Year %in% c(1981:2010) ~ &quot;1981-2010&quot;,
+    TRUE ~ &quot;2011-present&quot;
+  ))</code></pre>
+<p>Inspect the <code>comparison</code> dataframe by clicking on it in the <code>Environment</code> pane.</p>
+<p>Now that we have the <code>interval</code> variable, we can create a density plot to study the distribution of monthly deviations (<code>delta</code>), grouped by the different time periods we are interested in. Set <code>fill</code> to <code>interval</code> to group and colour the data by different time periods.</p>
+<pre class="r"><code>ggplot(comparison, aes(x=delta, fill=interval))+
+  geom_density(alpha=0.2) +   #density plot with tranparency set to 20%
+  theme_bw() +                #theme
+  labs (
+    title = &quot;Density Plot for Monthly Temperature Anomalies&quot;,
+    y     = &quot;Density&quot;         #changing y-axis label to sentence case
+  )</code></pre>
+<p><img src="index_files/figure-html/density_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>So far, we have been working with monthly anomalies. However, we might be interested in average annual anomalies. We can do this by using <code>group_by()</code> and <code>summarise()</code>, followed by a scatter plot to display the result.</p>
+<pre class="r"><code>#creating yearly averages
+average_annual_anomaly &lt;- tidyweather %&gt;% 
+  group_by(Year) %&gt;%   #grouping data by Year
+  
+  # creating summaries for mean delta 
+  # use `na.rm=TRUE` to eliminate NA (not available) values 
+  summarise(annual_average_delta = mean(delta, na.rm=TRUE)) 
+
+#plotting the data:
+ggplot(average_annual_anomaly, aes(x=Year, y= annual_average_delta))+
+  geom_point()+
+  
+  #Fit the best fit line, using LOESS method
+  geom_smooth(method=&quot;loess&quot;) +
+  
+  #change to theme_bw() to have white background + black frame around plot
+  theme_bw() +
+  labs (
+    title = &quot;Average Yearly Anomaly&quot;,
+    y     = &quot;Average Annual Delta&quot;
+  )     </code></pre>
+<p><img src="index_files/figure-html/averaging-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="confidence-interval-for-delta" class="section level2">
+<h2>Confidence Interval for <code>delta</code></h2>
+<p><a href="https://earthobservatory.nasa.gov/world-of-change/decadaltemp.php">NASA points out on their website</a> that</p>
+<blockquote>
+<p>A one-degree global change is significant because it takes a vast amount of heat to warm all the oceans, atmosphere, and land by that much. In the past, a one- to two-degree drop was all it took to plunge the Earth into the Little Ice Age.</p>
+</blockquote>
+<p>Your task is to construct a confidence interval for the average annual delta since 2011, both using a formula and using a bootstrap simulation with the <code>infer</code> package. Recall that the dataframe <code>comparison</code> has already grouped temperature anomalies according to time intervals; we are only interested in what is happening between 2011-present.</p>
+<pre class="r"><code>formula_ci &lt;- comparison %&gt;% 
+
+  # choose the interval 2011-present
+  # what dplyr verb will you use?
+  
+  filter(interval==&quot;2011-present&quot;)%&gt;%
+  
+  # calculate summary statistics for temperature deviation (delta) 
+  # calculate mean, SD, count, SE, lower/upper 95% CI
+  # what dplyr verb will you use? 
+  
+  summarize(mean_delta=mean(delta, na.rm=TRUE), 
+    SD_delta=sd(delta, na.rm=TRUE), 
+    count_delta=n(), 
+    se_delta=SD_delta/sqrt(count_delta), 
+    t_critical=qt(0.975,count_delta-1), 
+    Lower_CI=mean_delta-t_critical*se_delta, upper_CI=mean_delta+t_critical*se_delta)
+
+#print out formula_CI
+formula_ci</code></pre>
+<pre><code>## # A tibble: 1 x 7
+##   mean_delta SD_delta count_delta se_delta t_critical Lower_CI upper_CI
+##        &lt;dbl&gt;    &lt;dbl&gt;       &lt;int&gt;    &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+## 1      0.966    0.262         108   0.0252       1.98    0.916     1.02</code></pre>
+<pre class="r"><code>library(infer)
+
+bootstrap_delta &lt;- comparison %&gt;%
+            filter(interval==&quot;2011-present&quot;) %&gt;%
+            specify(response = delta) %&gt;%
+            generate(reps=1000, type=&quot;bootstrap&quot;) %&gt;%
+            calculate(stat = &quot;mean&quot;) 
+
+bootstrap_CI &lt;- bootstrap_delta %&gt;%
+            get_ci(level=0.95, type = &quot;percentile&quot;) #only work with bootstrap
+
+bootstrap_CI</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   lower_ci upper_ci
+##      &lt;dbl&gt;    &lt;dbl&gt;
+## 1    0.918     1.01</code></pre>
+<blockquote>
+<p>What is the data showing us? Please type your answer after (and outside!) this blockquote. You have to explain what you have done, and the interpretation of the result. One paragraph max, please!</p>
+</blockquote>
+<p>We used two methods to calculate the 95% confidence interval of temperature anomalies. Essentially, this confidence interval indicates the range of values for which we are 95% certain that they contain the true ‘population’ mean. The first method uses a student-t distribution to standard deviations and the t-critical values that correspond to the 95% interval. This calculation yielded a lower bound of 0.916 and an upper bound of 1.02, meaning the true mean temperature deviation from 2011 onward is between these values with 95% confidence. The second method uses a bootstrap calculation to find the confidence interval. We set the number of repeats to 1000 and this yielded a confidence interval of 0.914 to 1.02. Overall, the two confidence intervals are very similar and they indicate that temperature anomalies since 2011 have been close to unitary, which is extremely significant according to the NASA website.</p>
+</div>
+</div>
+<div id="general-social-survey-gss" class="section level1">
+<h1>General Social Survey (GSS)</h1>
+<p>The <a href="http://www.gss.norc.org/">General Social Survey (GSS)</a> gathers data on American society in order to monitor and explain trends in attitudes, behaviours, and attributes. Many trends have been tracked for decades, so one can see the evolution of attitudes, etc in American Society.</p>
+<p>In this assignment we analyze data from the <strong>2016 GSS sample data</strong>, using it to estimate values of <em>population parameters</em> of interest about US adults. The GSS sample data file has 2867 observations of 935 variables, but we are only interested in very few of these variables and you are using a smaller file.</p>
+<pre class="r"><code>gss &lt;- read_csv(here::here(&quot;data&quot;, &quot;smallgss2016.csv&quot;), 
+                na = c(&quot;&quot;, &quot;Don&#39;t know&quot;,
+                       &quot;No answer&quot;, &quot;Not applicable&quot;))</code></pre>
+<pre><code>## Error: &#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/data/smallgss2016.csv&#39; does not exist.</code></pre>
+<p>You will also notice that many responses should not be taken into consideration, like “No Answer”, “Don’t Know”, “Not applicable”, “Refused to Answer”.</p>
+<p>We will be creating 95% confidence intervals for population parameters. The variables we have are the following:</p>
+<ul>
+<li>hours and minutes spent on email weekly. The responses to these questions are recorded in the <code>emailhr</code> and <code>emailmin</code> variables. For example, if the response is 2.50 hours, this would be recorded as emailhr = 2 and emailmin = 30.</li>
+<li><code>snapchat</code>, <code>instagrm</code>, <code>twitter</code>: whether respondents used these social media in 2016</li>
+<li><code>sex</code>: Female - Male</li>
+<li><code>degree</code>: highest education level attained</li>
+</ul>
+<div id="instagram-and-snapchat-by-sex" class="section level2">
+<h2>Instagram and Snapchat, by sex</h2>
+<p>Can we estimate the <em>population</em> proportion of Snapchat or Instagram users in 2016?</p>
+<ol style="list-style-type: decimal">
+<li>Create a new variable, <code>snap_insta</code> that is <em>Yes</em> if the respondent reported using any of Snapchat (<code>snapchat</code>) or Instagram (<code>instagrm</code>), and <em>No</em> if not. If the recorded value was NA for both of these questions, the value in your new variable should also be NA.</li>
+</ol>
+<pre class="r"><code>#addition of new column that shows who uses either or both platforms, none, or didnt proivde data (Yes, No, NA)
+gss &lt;- gss %&gt;% 
+  mutate(snap_insta= ifelse(snapchat==&quot;Yes&quot; | instagrm ==&quot;Yes&quot;, &quot;Yes&quot;, ifelse(snapchat== &quot;NA&quot; &amp; instagrm== &quot;NA&quot;, &quot;NA&quot;, &quot;No&quot;)))</code></pre>
+<pre><code>## Error: Problem with `mutate()` input `snap_insta`.
+## x object &#39;snapchat&#39; not found
+## ℹ Input `snap_insta` is `ifelse(...)`.</code></pre>
+<pre class="r"><code>gss</code></pre>
+<pre><code>## # A tibble: 500 x 11
+##     year   age sex    college  partyid hompop hours income class finrela  weight
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;  &lt;fct&gt;    &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;ord&gt;  &lt;fct&gt; &lt;fct&gt;     &lt;dbl&gt;
+##  1  2014    36 male   degree   ind          3    50 $2500… midd… below a…  0.896
+##  2  1994    34 female no degr… rep          4    31 $2000… work… below a…  1.08 
+##  3  1998    24 male   degree   ind          1    40 $2500… work… below a…  0.550
+##  4  1996    42 male   no degr… ind          4    40 $2500… work… above a…  1.09 
+##  5  1994    31 male   degree   rep          2    40 $2500… midd… above a…  1.08 
+##  6  1996    32 female no degr… rep          4    53 $2500… midd… average   1.09 
+##  7  1990    48 female no degr… dem          2    32 $2500… work… below a…  1.06 
+##  8  2016    36 female degree   ind          1    20 $2500… midd… above a…  0.478
+##  9  2000    30 female degree   rep          5    40 $2500… midd… average   1.10 
+## 10  1998    33 female no degr… dem          2    40 $1500… work… far bel…  0.550
+## # … with 490 more rows</code></pre>
+<ol style="list-style-type: decimal">
+<li>Calculate the proportion of Yes’s for <code>snap_insta</code> among those who answered the question, i.e. excluding NAs.</li>
+</ol>
+<pre class="r"><code># this variable counts all people who sumbitted an answer 
+sum_users_answer &lt;- sum(gss$snap_insta!= &quot;NA&quot;)
+
+#this calculates the proportion of people using platforms (Yes/(Yes+No))
+prop_yes_gss &lt;-  gss %&gt;% 
+  summarise(prop_yes = (sum(ifelse(snap_insta==&quot;Yes&quot;, 1, 0))/sum_users_answer))</code></pre>
+<pre><code>## Error: Problem with `summarise()` input `prop_yes`.
+## x object &#39;snap_insta&#39; not found
+## ℹ Input `prop_yes` is `(sum(ifelse(snap_insta == &quot;Yes&quot;, 1, 0))/sum_users_answer)`.</code></pre>
+<pre class="r"><code>prop_yes_gss</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;prop_yes_gss&#39; not found</code></pre>
+<ol style="list-style-type: decimal">
+<li>Using the CI formula for proportions, please construct 95% CIs for men and women who used either Snapchat or Instagram</li>
+</ol>
+<pre class="r"><code>#women who use either Snapchat or Instagram
+
+#sum for women who use either Snapchat or Instagram
+sum_women_snap_insta &lt;- sum(gss$snap_insta != &quot;NA&quot; &amp; gss$sex==&quot;Female&quot;) 
+
+#proportion of women using platforms (Yes/(Yes+No))
+prop_yes_gss_women &lt;-  gss %&gt;% 
+  filter (sex==&quot;Female&quot;) %&gt;%
+  summarise(prop_yes = (sum(ifelse(snap_insta==&quot;Yes&quot;, 1, 0))/sum_women_snap_insta))</code></pre>
+<pre><code>## Error: Problem with `summarise()` input `prop_yes`.
+## x object &#39;snap_insta&#39; not found
+## ℹ Input `prop_yes` is `(sum(ifelse(snap_insta == &quot;Yes&quot;, 1, 0))/sum_women_snap_insta)`.</code></pre>
+<pre class="r"><code>#standard erros and the average for women 
+stan_error_women &lt;- sqrt(prop_yes_gss_women*(1-prop_yes_gss_women)/ (sum_women_snap_insta))</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;prop_yes_gss_women&#39; not found</code></pre>
+<pre class="r"><code>mean_snap_insta_women &lt;- prop_yes_gss_women </code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;prop_yes_gss_women&#39; not found</code></pre>
+<pre class="r"><code>#CI of 95% for women who use either Snapchat or Instagram
+critical_t_value &lt;- qt(0.975,  sum_women_snap_insta -1)
+lower_CI_women &lt;- mean_snap_insta_women - (critical_t_value*stan_error_women)</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_snap_insta_women&#39; not found</code></pre>
+<pre class="r"><code>upper_CI_women &lt;- mean_snap_insta_women + (critical_t_value*stan_error_women)</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_snap_insta_women&#39; not found</code></pre>
+<pre class="r"><code>#men who use either Snapchat or Instagram
+
+#sum for men who use either Snapchat or Instagram
+sum_men_snap_insta &lt;- sum(gss$snap_insta != &quot;NA&quot; &amp; gss$sex==&quot;Male&quot;) 
+
+#proportion of men using platforms (yes/(yes+no))
+prop_yes_gss_men &lt;-  gss %&gt;% 
+  filter (sex==&quot;Male&quot;) %&gt;%
+  summarise(prop_yes = (sum(ifelse(snap_insta==&quot;Yes&quot;, 1, 0))/sum_men_snap_insta))</code></pre>
+<pre><code>## Error: Problem with `summarise()` input `prop_yes`.
+## x object &#39;snap_insta&#39; not found
+## ℹ Input `prop_yes` is `(sum(ifelse(snap_insta == &quot;Yes&quot;, 1, 0))/sum_men_snap_insta)`.</code></pre>
+<pre class="r"><code>#standard erros and the average for men 
+stan_error_men &lt;- sqrt(prop_yes_gss_men*(1-prop_yes_gss_men)/ (sum_men_snap_insta))</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;prop_yes_gss_men&#39; not found</code></pre>
+<pre class="r"><code>mean_snap_insta_men &lt;- prop_yes_gss_men</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;prop_yes_gss_men&#39; not found</code></pre>
+<pre class="r"><code>#CI of 95% for men who use either Snapchat or Instagram
+critical_t_value &lt;- qt(0.975,  sum_men_snap_insta -1)
+lower_CI_men &lt;- mean_snap_insta_men - (critical_t_value*stan_error_men)</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_snap_insta_men&#39; not found</code></pre>
+<pre class="r"><code>upper_CI_men &lt;- mean_snap_insta_men + (critical_t_value*stan_error_men)</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_snap_insta_men&#39; not found</code></pre>
+<pre class="r"><code>#print CI of 95% for women and men
+paste(&quot;Proportion of women using either Snapchat or Instagram:&quot;, prop_yes_gss_women)</code></pre>
+<pre><code>## Error in paste(&quot;Proportion of women using either Snapchat or Instagram:&quot;, : object &#39;prop_yes_gss_women&#39; not found</code></pre>
+<pre class="r"><code>paste(&quot;CI 95% women:&quot;, &quot;[&quot;, lower_CI_women, &quot;-&quot;, upper_CI_women, &quot;]&quot;)</code></pre>
+<pre><code>## Error in paste(&quot;CI 95% women:&quot;, &quot;[&quot;, lower_CI_women, &quot;-&quot;, upper_CI_women, : object &#39;lower_CI_women&#39; not found</code></pre>
+<pre class="r"><code>paste(&quot;Proportion of men using either Snapchat or Instagram:&quot;, prop_yes_gss_men)</code></pre>
+<pre><code>## Error in paste(&quot;Proportion of men using either Snapchat or Instagram:&quot;, : object &#39;prop_yes_gss_men&#39; not found</code></pre>
+<pre class="r"><code>paste(&quot;CI 95% men:&quot;, &quot;[&quot;, lower_CI_men, &quot;-&quot;, upper_CI_men, &quot;]&quot;)</code></pre>
+<pre><code>## Error in paste(&quot;CI 95% men:&quot;, &quot;[&quot;, lower_CI_men, &quot;-&quot;, upper_CI_men, &quot;]&quot;): object &#39;lower_CI_men&#39; not found</code></pre>
+</div>
+<div id="twitter-by-education-level" class="section level2">
+<h2>Twitter, by education level</h2>
+<p>Can we estimate the <em>population</em> proportion of Twitter users by education level in 2016?.</p>
+<p>There are 5 education levels in variable <code>degree</code> which, in ascneding order of years of education, are Lt high school, High School, Junior college, Bachelor, Graduate.</p>
+<ol style="list-style-type: decimal">
+<li>Turn <code>degree</code> from a character variable into a factor variable. Make sure the order is the correct one and that levels are not sorted alphabetically which is what R by default does.</li>
+</ol>
+<pre class="r"><code>twitter &lt;- gss %&gt;%
+  mutate(degree = factor(degree, levels=c(&quot;NA&quot;,&quot;Lt high school&quot;, &quot;High school&quot;, 
+                                          &quot;Junior college&quot;, &quot;Bachelor&quot;, &quot;Graduate&quot;), ordered=TRUE)
+         )</code></pre>
+<pre><code>## Error: Problem with `mutate()` input `degree`.
+## x object &#39;degree&#39; not found
+## ℹ Input `degree` is `factor(...)`.</code></pre>
+<ol style="list-style-type: decimal">
+<li>Create a new variable, <code>bachelor_graduate</code> that is <em>Yes</em> if the respondent has either a <code>Bachelor</code> or <code>Graduate</code> degree. As before, if the recorded value for either was NA, the value in your new variable should also be NA.</li>
+</ol>
+<pre class="r"><code>twitter_new &lt;- twitter %&gt;%
+  mutate(bachelor_graduate = ifelse(degree==&quot;Bachelor&quot; | degree ==&quot;Graduate&quot;, &quot;Yes&quot;,
+                                    ifelse(degree== &quot;NA&quot;, NA_character_, &quot;No&quot;)))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;twitter&#39; not found</code></pre>
+<ol style="list-style-type: decimal">
+<li>Calculate the proportion of <code>bachelor_graduate</code> who do (Yes) and who don’t (No) use twitter.</li>
+</ol>
+<pre class="r"><code>twitter_graduate &lt;- twitter_new %&gt;% 
+  filter (bachelor_graduate == &quot;Yes&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;twitter_new&#39; not found</code></pre>
+<pre class="r"><code>count_twitter &lt;- count(twitter_graduate$twitter==&quot;Yes&quot;) + count(twitter_graduate$twitter==&quot;No&quot;)</code></pre>
+<pre><code>## Error in count(twitter_graduate$twitter == &quot;Yes&quot;): object &#39;twitter_graduate&#39; not found</code></pre>
+<pre class="r"><code>prop_twitter &lt;- twitter_graduate %&gt;% 
+  summarise(prop_twitter_graduate_yes = (sum(ifelse(twitter==&quot;Yes&quot;, 1, 0))/count_twitter))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;twitter_graduate&#39; not found</code></pre>
+<ol style="list-style-type: decimal">
+<li>Using the CI formula for proportions, please construct two 95% CIs for <code>bachelor_graduate</code> vs whether they use (Yes) and don’t (No) use twitter.</li>
+</ol>
+<pre class="r"><code>#standard error and mean of people who have a bachelor or graduate and use twitter
+stan_error_twitter_yes &lt;- sqrt(prop_twitter*(1-prop_twitter)/(count_twitter))</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;prop_twitter&#39; not found</code></pre>
+<pre class="r"><code>mean_twitter_yes &lt;- prop_twitter</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;prop_twitter&#39; not found</code></pre>
+<pre class="r"><code>#CI of 95% of people who have a bachelor or graduate and use twitter
+critical_t_value &lt;- qt(0.975,  count_twitter -1)</code></pre>
+<pre><code>## Error in qt(0.975, count_twitter - 1): object &#39;count_twitter&#39; not found</code></pre>
+<pre class="r"><code>lower_CI_yes &lt;- mean_twitter_yes - critical_t_value*stan_error_twitter_yes</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_twitter_yes&#39; not found</code></pre>
+<pre class="r"><code>upper_CI_yes &lt;- mean_twitter_yes + critical_t_value*stan_error_twitter_yes</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_twitter_yes&#39; not found</code></pre>
+<pre class="r"><code>#standard error and mean of people who have a bachelor or graduate and don&#39;t use twitter
+stan_error_twitter_no &lt;- sqrt((1-prop_twitter)*(1-(1-prop_twitter))/(count_twitter))</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;prop_twitter&#39; not found</code></pre>
+<pre class="r"><code>mean_twitter_no &lt;- 1-prop_twitter</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;prop_twitter&#39; not found</code></pre>
+<pre class="r"><code>#CI of 95% of people who have a bachelor or graduate and don&#39;t use twitter
+critical_t_value &lt;- qt(0.975,  count_twitter -1)</code></pre>
+<pre><code>## Error in qt(0.975, count_twitter - 1): object &#39;count_twitter&#39; not found</code></pre>
+<pre class="r"><code>lower_CI_no &lt;- mean_twitter_no - critical_t_value*stan_error_twitter_no</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_twitter_no&#39; not found</code></pre>
+<pre class="r"><code>upper_CI_no &lt;- mean_twitter_no + critical_t_value*stan_error_twitter_no</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_twitter_no&#39; not found</code></pre>
+<pre class="r"><code>#proportion women and men and CIs for 95%
+paste(&quot;Proportion of graduates using twitter:&quot;, prop_twitter$prop_twitter_graduate_yes)</code></pre>
+<pre><code>## Error in paste(&quot;Proportion of graduates using twitter:&quot;, prop_twitter$prop_twitter_graduate_yes): object &#39;prop_twitter&#39; not found</code></pre>
+<pre class="r"><code>paste(&quot;CI 95% of graduates using twitter:&quot;, &quot;[&quot; , lower_CI_yes, &quot;-&quot;, upper_CI_yes, &quot;]&quot;)</code></pre>
+<pre><code>## Error in paste(&quot;CI 95% of graduates using twitter:&quot;, &quot;[&quot;, lower_CI_yes, : object &#39;lower_CI_yes&#39; not found</code></pre>
+<pre class="r"><code>paste(&quot;Proportion of graduates not using twitter:&quot;, 1-prop_twitter$prop_twitter_graduate_yes)</code></pre>
+<pre><code>## Error in paste(&quot;Proportion of graduates not using twitter:&quot;, 1 - prop_twitter$prop_twitter_graduate_yes): object &#39;prop_twitter&#39; not found</code></pre>
+<pre class="r"><code>paste(&quot;CI 95% graduates not using twitter:&quot;, &quot;[&quot;, lower_CI_no, &quot;-&quot;, upper_CI_no, &quot;]&quot;)</code></pre>
+<pre><code>## Error in paste(&quot;CI 95% graduates not using twitter:&quot;, &quot;[&quot;, lower_CI_no, : object &#39;lower_CI_no&#39; not found</code></pre>
+<ol style="list-style-type: decimal">
+<li>Do these two Confidence Intervals overlap?</li>
+</ol>
+<p>These two Confidence Intervals don’t overlap. With 95% confidence we can say that there is a difference between the proportion of graduates using twitter compared to those who don’t use it. The proportion of graduates using twitter is lower than the proportion of graduates not using it.</p>
+</div>
+<div id="email-usage" class="section level2">
+<h2>Email usage</h2>
+<p>Can we estimate the <em>population</em> parameter on time spent on email weekly?</p>
+<ol style="list-style-type: decimal">
+<li>Create a new variable called <code>email</code> that combines <code>emailhr</code> and <code>emailmin</code> to reports the number of minutes the respondents spend on email weekly.</li>
+</ol>
+<pre class="r"><code>email &lt;- gss %&gt;%
+  mutate(emailmin = as.numeric(emailmin), emailhr = as.numeric(emailhr)) %&gt;% 
+  mutate(email = (emailhr * 60) + emailmin)</code></pre>
+<pre><code>## Error: Problem with `mutate()` input `emailmin`.
+## x object &#39;emailmin&#39; not found
+## ℹ Input `emailmin` is `as.numeric(emailmin)`.</code></pre>
+<ol style="list-style-type: decimal">
+<li>Visualise the distribution of this new variable. Find the mean and the median number of minutes respondents spend on email weekly. Is the mean or the median a better measure of the typical amoung of time Americans spend on email weekly? Why?</li>
+</ol>
+<pre class="r"><code>email_user &lt;- email%&gt;%
+   filter (email != &quot;NA_character_&quot;) %&gt;%
+    summarise(mean_email = mean (email), median_email = median (email)) </code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;email&#39; not found</code></pre>
+<p>The median is a better measure of the typical amount of time Americans spend on email weekly because there are many outliers and thus the mean doesn’t represent a precise value - the standard deviation is high as well as the mean (compared to the median).</p>
+<ol style="list-style-type: decimal">
+<li>Using the <code>infer</code> package, calculate a 95% bootstrap confidence interval for the mean amount of time Americans spend on email weekly. Interpret this interval in context of the data, reporting its endpoints in “humanized” units (e.g. instead of 108 minutes, report 1 hr and 8 minutes). If you get a result that seems a bit odd, discuss why you think this might be the case.</li>
+</ol>
+<pre class="r"><code>library(infer)
+
+boot_email &lt;- email %&gt;%
+  filter(email != &quot;NA_character_&quot;) %&gt;%
+  
+  # Specify the variable of interest
+  specify(response = email) %&gt;%
+  
+  # Generate a bunch of bootstrap samples
+  generate(reps = 1000, type = &quot;bootstrap&quot;) %&gt;%
+  
+  # Find the mean of each sample
+  calculate(stat =&quot;mean&quot;) </code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;email&#39; not found</code></pre>
+<pre class="r"><code>percentile_ci &lt;- boot_email %&gt;%
+get_confidence_interval(level = 0.95, type = &quot;percentile&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;boot_email&#39; not found</code></pre>
+<pre class="r"><code># Report endpoints in &quot;humanized&quot; units (using arithmetic operators %/% and %%)
+percentile_ci_new_lower_hour &lt;- percentile_ci$lower_ci%/%60 </code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;percentile_ci&#39; not found</code></pre>
+<pre class="r"><code>percentile_ci_new_lower_minute &lt;- percentile_ci$lower_ci%%60    </code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;percentile_ci&#39; not found</code></pre>
+<pre class="r"><code>percentile_ci_new_upper_hour &lt;- percentile_ci$upper_ci%/%60 </code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;percentile_ci&#39; not found</code></pre>
+<pre class="r"><code>percentile_ci_new_upper_minute &lt;- percentile_ci$upper_ci%%60   </code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;percentile_ci&#39; not found</code></pre>
+<pre class="r"><code>paste(percentile_ci_new_lower_hour, &quot;hours and&quot;, 
+      format(round(percentile_ci_new_lower_minute), 
+             nsmall = 0) , &quot;minutes&quot;)</code></pre>
+<pre><code>## Error in paste(percentile_ci_new_lower_hour, &quot;hours and&quot;, format(round(percentile_ci_new_lower_minute), : object &#39;percentile_ci_new_lower_hour&#39; not found</code></pre>
+<pre class="r"><code>paste(percentile_ci_new_upper_hour, &quot;hours and&quot;, 
+      format(round(percentile_ci_new_upper_minute), 
+             nsmall = 0) , &quot;minutes&quot;)</code></pre>
+<pre><code>## Error in paste(percentile_ci_new_upper_hour, &quot;hours and&quot;, format(round(percentile_ci_new_upper_minute), : object &#39;percentile_ci_new_upper_hour&#39; not found</code></pre>
+<ol style="list-style-type: decimal">
+<li>Would you expect a 99% confidence interval to be wider or narrower than the interval you calculated above? Explain your reasoning.</li>
+</ol>
+<p>We would expect a 99% Confidence Interval to be wider than the interval calculated above, because the margin of error would increase and result in a wider interval. We would then predict the population parameter with 99% confidence.</p>
+</div>
+</div>
+<div id="trumps-approval-margins" class="section level1">
+<h1>Trump’s Approval Margins</h1>
+<p>As we saw in class, fivethirtyeight.com has detailed data on <a href="https://projects.fivethirtyeight.com/trump-approval-ratings">all polls that track the president’s approval</a></p>
+<pre class="r"><code># Import approval polls data
+approval_polllist &lt;- read_csv(here::here(&#39;data&#39;, &#39;approval_polllist.csv&#39;))</code></pre>
+<pre><code>## Error: &#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/data/approval_polllist.csv&#39; does not exist.</code></pre>
+<pre class="r"><code># or directly off fivethirtyeight website
+# approval_polllist &lt;- read_csv(&#39;https://projects.fivethirtyeight.com/trump-approval-data/approval_polllist.csv&#39;) 
+
+glimpse(approval_polllist)</code></pre>
+<pre><code>## Error in glimpse(approval_polllist): object &#39;approval_polllist&#39; not found</code></pre>
+<pre class="r"><code># Use `lubridate` to fix dates, as they are given as characters.
+library(lubridate)
+
+approval_polllist_cleaned &lt;- approval_polllist %&gt;%
+    filter(subgroup==&quot;Voters&quot;)%&gt;%
+    mutate(modeldate = mdy(modeldate), 
+           startdate = mdy(startdate), 
+           enddate=mdy(enddate),
+           createddate=mdy(createddate), 
+           timestamp=parse_date_time(timestamp, orders=&quot;HMSdmy&quot;)
+           )</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;approval_polllist&#39; not found</code></pre>
+<pre class="r"><code>glimpse(approval_polllist_cleaned)</code></pre>
+<pre><code>## Error in glimpse(approval_polllist_cleaned): object &#39;approval_polllist_cleaned&#39; not found</code></pre>
+<div id="create-a-plot" class="section level2">
+<h2>Create a plot</h2>
+<p>What I would like you to do is to calculate the average net approval rate (approve- disapprove) for each week since he got into office. I want you plot the net approval, along with its 95% confidence interval. There are various dates given for each poll, please use <code>enddate</code>, i.e., the date the poll ended.</p>
+<pre class="r"><code>trump_net_approval &lt;- approval_polllist_cleaned %&gt;%
+  mutate (net_approval_rate = (approve - disapprove), 
+          end_week = isoweek(enddate), year =year(enddate)) %&gt;% 
+  group_by(year, end_week) %&gt;% 
+  summarize(mean_net = mean(net_approval_rate)) %&gt;% 
+  ungroup()</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;approval_polllist_cleaned&#39; not found</code></pre>
+<pre class="r"><code>trump_net_approval_CI&lt;- approval_polllist_cleaned %&gt;%
+  mutate (net_approval_rate = (approve - disapprove), 
+          end_week = isoweek(enddate), year =year(enddate)) %&gt;% 
+  group_by(year, end_week) %&gt;% 
+  summarize(mean_net = mean(net_approval_rate), 
+            std_trump = sd(net_approval_rate), 
+            count_endweek=n(),
+            st_error_trump = std_trump/sqrt(count_endweek), 
+            t_critical = qt(0.975,  count_endweek-1), 
+            lower_CI = mean_net - t_critical*st_error_trump, 
+            upper_CI = mean_net + t_critical*st_error_trump)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;approval_polllist_cleaned&#39; not found</code></pre>
+<pre class="r"><code>ggplot(trump_net_approval_CI, aes(x=end_week, y=mean_net, color=as.factor(year))) +
+  facet_wrap(vars(year)) +
+  geom_linerange(aes(ymax = upper_CI , ymin =  lower_CI), size=0) +
+  geom_point(size=0.75) +
+  geom_hline(yintercept=0, linetype=&quot;solid&quot;, color = &quot;orange&quot;) + 
+  geom_line(aes(y = upper_CI))+
+  geom_line(aes(y = lower_CI))+
+  geom_ribbon(aes(ymin=lower_CI,ymax=upper_CI), alpha=0.2) +
+  geom_line() +
+  labs(title =&quot;Estimating Net Approval (approve-disapprove) for Donald Trump&quot;, 
+       subtitle =&quot;Weekly average of all polls&quot;, x=&quot;Week of year&quot;,
+       y = &quot;Average Net Approval (%) &quot;) +
+  scale_y_continuous(labels = scales::number_format(digits = 1)) + 
+  theme(panel.grid.major = element_line(colour = &quot;whitesmoke&quot;), 
+        panel.background = element_rect(fill = &quot;whitesmoke&quot;), 
+        legend.position = &quot;none&quot;) +
+    scale_y_continuous(breaks=c(-20,0, -17.7,-15.0,-12.5,-10.0,-7.5,-5.0,-2.5,0.0,2.5,5.0,7.5))+
+    scale_x_continuous(breaks= c(0,13, 26, 39, 52)) +
+    scale_color_manual(values=c(&quot;#FF736C&quot;, &quot;#7DAE00&quot;, &quot;#00BBBD&quot;, &quot;#C47EFF&quot;))</code></pre>
+<pre><code>## Error in ggplot(trump_net_approval_CI, aes(x = end_week, y = mean_net, : object &#39;trump_net_approval_CI&#39; not found</code></pre>
+<p>You can facet by year, and add an orange line at zero. Your plot should look like this:</p>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/trump_approval_margin.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="compare-confidence-intervals" class="section level2">
+<h2>Compare Confidence Intervals</h2>
+<p>Compare the confidence intervals for <code>week 15</code> (6-12 April 2020) and <code>week 34</code> (17-23 August 2020). Can you explain what’s going on? One paragraph would be enough.</p>
+<p>In week 15 of 2020, the mean net approval rate is -7.1 with 95% CI interval -8.21 and -5.99, while in week 34, the mean net approval rate is -10.91 with 95% CI interval -13.49 and -8.34. The mean net approval rate is lower and the confidence interval is wider in week 34, meaning that more people disapproved Trump in week 34 than week 15. One plausible explanation is that as the economy recovers from the covid-19 lockdown, more and more Americans disapprove Trump’s covid measures and policies as they see second spike in covid-19 cases during the summer in the US.</p>
+</div>
+</div>
+<div id="gapminder-revisited" class="section level1">
+<h1>Gapminder revisited</h1>
+<p>Recall the <code>gapminder</code> data frame from the gapminder package. That data frame contains just six columns from the larger <a href="https://www.gapminder.org/data/">data in Gapminder World</a>. In this part, you will join a few dataframes with more data than the ‘gapminder’ package. Specifically, you will look at data on</p>
+<ul>
+<li>Life expectancy at birth (life_expectancy_years.csv)</li>
+<li>GDP per capita in constant 2010 US$ (<a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.KD" class="uri">https://data.worldbank.org/indicator/NY.GDP.PCAP.KD</a>)</li>
+<li>Female fertility: The number of babies per woman (<a href="https://data.worldbank.org/indicator/SP.DYN.TFRT.IN" class="uri">https://data.worldbank.org/indicator/SP.DYN.TFRT.IN</a>)</li>
+<li>Primary school enrollment as % of children attending primary school (<a href="https://data.worldbank.org/indicator/SE.PRM.NENR" class="uri">https://data.worldbank.org/indicator/SE.PRM.NENR</a>)</li>
+<li>Mortality rate, for under 5, per 1000 live births (<a href="https://data.worldbank.org/indicator/SH.DYN.MORT" class="uri">https://data.worldbank.org/indicator/SH.DYN.MORT</a>)</li>
+<li>HIV prevalence (adults_with_hiv_percent_age_15_49.csv): The estimated number of people living with HIV per 100 population of age group 15-49.</li>
+</ul>
+<p>You must use the <code>wbstats</code> package to download data from the World Bank. The relevant World Bank indicators are <code>SP.DYN.TFRT.IN</code>, <code>SE.PRM.NENR</code>, <code>NY.GDP.PCAP.KD</code>, and <code>SH.DYN.MORT</code></p>
+<pre class="r"><code># load gapminder HIV data
+hiv &lt;- read_csv(here::here(&quot;data&quot;,&quot;adults_with_hiv_percent_age_15_49.csv&quot;))</code></pre>
+<pre><code>## Error: &#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/data/adults_with_hiv_percent_age_15_49.csv&#39; does not exist.</code></pre>
+<pre class="r"><code>life_expectancy &lt;- read_csv(here::here(&quot;data&quot;,&quot;life_expectancy_years.csv&quot;))</code></pre>
+<pre><code>## Error: &#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/data/life_expectancy_years.csv&#39; does not exist.</code></pre>
+<pre class="r"><code># get World bank data using wbstats
+indicators &lt;- c(&quot;SP.DYN.TFRT.IN&quot;,&quot;SE.PRM.NENR&quot;, &quot;SH.DYN.MORT&quot;, &quot;NY.GDP.PCAP.KD&quot;)
+
+
+library(wbstats)
+
+worldbank_data &lt;- wb_data(country=&quot;countries_only&quot;, #countries only- no aggregates like Latin America, Europe, etc.
+                          indicator = indicators, 
+                          start_date = 1960, 
+                          end_date = 2016)
+
+# get a dataframe of information regarding countries, indicators, sources, regions, indicator topics, lending types, income levels,  from the World Bank API 
+countries &lt;-  wbstats::wb_cachelist$countries</code></pre>
+<p>You have to join the 3 dataframes (life_expectancy, worldbank_data, and HIV) into one. You may need to tidy your data first and then perform <a href="http://r4ds.had.co.nz/relational-data.html">join operations</a>. Think about what type makes the most sense <strong>and explain why you chose it</strong>.</p>
+<ol style="list-style-type: decimal">
+<li>What is the relationship between HIV prevalence and life expectancy? Generate a scatterplot with a smoothing line to report your results. You may find faceting useful</li>
+<li>What is the relationship between fertility rate and GDP per capita? Generate a scatterplot with a smoothing line to report your results. You may find facetting by region useful</li>
+<li>Which regions have the most observations with missing HIV data? Generate a bar chart (<code>geom_col()</code>), in descending order.</li>
+<li>How has mortality rate for under 5 changed by region? In each region, find the top 5 countries that have seen the greatest improvement, as well as those 5 countries where mortality rates have had the least improvement or even deterioration.</li>
+<li>Is there a relationship between primary school enrollment and fertility rate?</li>
+</ol>
+<p>We used pivot_longer to transform the data. To remove observations that were not shared between the two datasets, an inner_join was used to combine them, as well as another inner_join to combine with the world bank data. We then added a region column to the world bank data.</p>
+<pre class="r"><code># Used to put the HIV and life expectancy data into long format.
+hiv &lt;- hiv %&gt;% 
+  pivot_longer(cols = &quot;1979&quot;:&quot;2011&quot;,  values_to = &quot;HIV&quot;, names_to = &quot;Year&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;hiv&#39; not found</code></pre>
+<pre class="r"><code>life_expectancy &lt;- life_expectancy %&gt;% 
+  pivot_longer(cols = &quot;1800&quot;:&quot;2100&quot;,  values_to = &quot;Life_Exp&quot;, names_to = &quot;Year&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;life_expectancy&#39; not found</code></pre>
+<pre class="r"><code># Used to extract the observations, based on year, from the life expectancy data where observations are in the HIV dataset.
+cleaned_life_expectancy &lt;- life_expectancy %&gt;% 
+  mutate(Year = as.character(Year))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;life_expectancy&#39; not found</code></pre>
+<pre class="r"><code># Used to merge the life expectancy and HIV datasets.
+hiv_life_expectancy &lt;-  
+  inner_join(cleaned_life_expectancy, hiv, by = c(&quot;Year&quot;, &quot;country&quot; ))</code></pre>
+<pre><code>## Error in inner_join(cleaned_life_expectancy, hiv, by = c(&quot;Year&quot;, &quot;country&quot;)): object &#39;cleaned_life_expectancy&#39; not found</code></pre>
+<pre class="r"><code>worldbank_data &lt;- 
+  worldbank_data %&gt;% 
+  rename(Year =&quot;date&quot;) %&gt;% 
+  mutate(Year = as.character(Year))
+
+
+# Used to join three datasets as well as add the region column.
+worldbank_life_expectancy_hiv &lt;- inner_join(worldbank_data, hiv_life_expectancy, by=c(&quot;country&quot;, &quot;Year&quot;))</code></pre>
+<pre><code>## Error in is.data.frame(y): object &#39;hiv_life_expectancy&#39; not found</code></pre>
+<pre class="r"><code>worldbank_life_expectancy_hiv &lt;- inner_join(worldbank_life_expectancy_hiv, countries %&gt;% select(region,country), by=c(&quot;country&quot;))</code></pre>
+<pre><code>## Error in inner_join(worldbank_life_expectancy_hiv, countries %&gt;% select(region, : object &#39;worldbank_life_expectancy_hiv&#39; not found</code></pre>
+<pre class="r"><code>worldbank_extended &lt;- inner_join(worldbank_data, countries %&gt;% select(region,country), by=c(&quot;country&quot;))</code></pre>
+<p>The relationship between HIV prevalence and life expectancy</p>
+<p>There seems to be a negative relationship between HIV prevalence and life expectancy in most regions. However, in particular regions (North America, Europe &amp; Central Asia) there is either very limited or a positive correlation.</p>
+<pre class="r"><code># Plot of the relationship between HIV prevalence and life expectancy
+ggplot(worldbank_life_expectancy_hiv, aes(x = HIV, y = Life_Exp)) +
+  geom_point(size = 0.1, alpha = 0.5)+
+  geom_smooth(method = &quot;lm&quot;)+
+  scale_x_log10()+
+  labs(title = &quot;HIV Prevalence vs Life Expectancy by Region&quot;,
+    x = &quot;HIV Prevalence (per 100 population)&quot;,
+    y = &quot;Life Expectancy&quot;)+
+  theme_clean()+
+  facet_wrap(~region)</code></pre>
+<pre><code>## Error in ggplot(worldbank_life_expectancy_hiv, aes(x = HIV, y = Life_Exp)): object &#39;worldbank_life_expectancy_hiv&#39; not found</code></pre>
+<p>The relationship between fertility rate and GDP per capita. The graph can be intrepreted that when there is an increase in GDP per capita there is a decrease in women fertility rate. The slope of the relationship varies by region, as some countries have on average larger families. Reasons for the downward slope could be that as economies become more developed, there is a shift to employment of women within the workplace and less time to act as a care-taker for the family, which places constraints on the ability to have larger families. The higher cost of living in developed countries may also contribute to the reduced ability to have larger families due to financial considerations.</p>
+<pre class="r"><code># Plot of the relationship between fertility rate and GDP per capita 
+ggplot(worldbank_extended, aes(x = NY.GDP.PCAP.KD/1000, y = SP.DYN.TFRT.IN))+
+  geom_point(size = 0.1, alpha = 0.5)+
+  geom_smooth(method = &#39;lm&#39;)+
+  scale_x_log10()+
+  labs (title = &quot;Relationship between fertility rate and GDP per capita&quot;,
+    x = &quot;GDP per capita (in thousands)&quot;,
+    y = &quot;Fertility Rate&quot;,
+    caption = &quot; Source: World Bank&quot;)+
+  theme_clean()+
+  facet_wrap(~region)+
+  scale_x_continuous(labels=scales::dollar_format())</code></pre>
+<p><img src="index_files/figure-html/fertility%20rate%20and%20GDP%20per%20capita-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>Regions that have the most observations with missing HIV data.</p>
+<p>According to the graph, Sub-Saharan Africa has the most observations with missing HIV data.</p>
+<pre class="r"><code>worldbank_life_expectancy_hiv %&gt;% 
+  # Used to filter for observations with missing values
+  group_by(region) %&gt;% 
+  filter(is.na(HIV)) %&gt;% 
+  summarise(count = n()) %&gt;% 
+  ggplot(aes(x = fct_reorder(region, count), y = count, colour = region))+
+  geom_col()+
+  coord_flip()+
+  labs (title = &quot;Regions with most observations with missing HIV data&quot;,
+    y = &quot;Number of observations with missing HIV data&quot;)+
+  theme_clean()+
+  theme(axis.title.y=element_blank())</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;worldbank_life_expectancy_hiv&#39; not found</code></pre>
+<p>Mortality rate for under 5 changed by region. The top 5 countries that have seen the greatest improvement, as well as those 5 countries where mortality rates have had the least improvement or even deterioration.</p>
+<pre class="r"><code>worldbank_data &lt;- worldbank_data %&gt;%
+  rename(date = &quot;Year&quot;)
+
+# Used to join by country and add region.
+mortality_rate &lt;- left_join(worldbank_data, countries[c(&quot;country&quot;, &quot;region&quot;)], by = &quot;country&quot;)
+
+# Used to create a table of the mortality rate grouping by year and region and mean.
+mortality_regions &lt;- na.exclude(mortality_rate[c(&quot;region&quot;, &quot;country&quot;, &quot;date&quot;, &quot;SH.DYN.MORT&quot;)])
+
+mortality_regions &lt;- mortality_regions %&gt;%
+  group_by(date, region) %&gt;%
+  summarise(mortality_rate = mean(SH.DYN.MORT)) %&gt;%
+  arrange(region, date)
+
+# Used to create a table of the starting mortality rate by year and region.
+starting_mortality_regions &lt;- mortality_regions[!duplicated(mortality_regions$region, mortality_regions$date),]
+
+starting_mortality_regions &lt;- starting_mortality_regions[c(&quot;region&quot;, &quot;mortality_rate&quot;)] %&gt;%
+  arrange(region)
+
+# Used to create a table of the ending mortality rate by year and region.
+mortality_regions &lt;- mortality_regions %&gt;%
+  arrange(desc(date), desc(region))
+
+ending_mortality_regions &lt;- mortality_regions[!duplicated(mortality_regions$region, mortality_regions$date),]
+
+ending_mortality_regions &lt;- ending_mortality_regions[c(&quot;region&quot;, &quot;mortality_rate&quot;)] %&gt;%
+  arrange(region)
+
+# Used to create a table for the change in mortality rate by region.
+mortality_change_regions &lt;- data.frame(region = starting_mortality_regions $region, mortality_change = (ending_mortality_regions[c(&quot;mortality_rate&quot;)] - starting_mortality_regions[c(&quot;mortality_rate&quot;)])/ starting_mortality_regions[c(&quot;mortality_rate&quot;)])
+
+# Used to create a table for the mortality rate grouping by date and country and summarising mean. 
+mortality_countries &lt;- na.exclude(mortality_rate[c(&quot;region&quot;, &quot;country&quot;, &quot;date&quot;, &quot;SH.DYN.MORT&quot;)])
+
+mortality_countries &lt;- mortality_countries %&gt;%
+  group_by(date, country) %&gt;%
+  summarise(mortality_rate = mean(SH.DYN.MORT)) %&gt;%
+  arrange(country, date)
+
+# Used to create a table with starting mortality rate by country
+starting_mortality_countries &lt;- mortality_countries[!duplicated(mortality_countries$country, mortality_countries$date),]
+
+starting_mortality_countries  &lt;- starting_mortality_countries[c(&quot;country&quot;, &quot;mortality_rate&quot;)] %&gt;%
+  arrange(country)
+
+# Used to create a table with ending mortality rate by country and date in descending order by date and country
+mortality_countries &lt;- mortality_countries %&gt;%
+  arrange(desc(date), desc(country))
+
+ending_mortality_countries &lt;- mortality_countries[!duplicated(mortality_countries$country, mortality_countries$date),]
+
+ending_mortality_countries &lt;- ending_mortality_countries[c(&quot;country&quot;, &quot;mortality_rate&quot;)] %&gt;%
+  arrange(country)
+
+# Used to create a table to show the change in mortality rate by country
+mortality_change_countries &lt;- data.frame(country = starting_mortality_countries$country, mortality_change = (-ending_mortality_countries[c(&quot;mortality_rate&quot;)]+ starting_mortality_countries[c(&quot;mortality_rate&quot;)])/ starting_mortality_countries[c(&quot;mortality_rate&quot;)])
+
+mortality_change_countries &lt;- mortality_change_countries %&gt;% 
+  mutate(mortality_rate = mortality_rate*100) %&gt;% 
+  rename(percentage_change_mortality_rate = &quot;mortality_rate&quot;) %&gt;% 
+  inner_join(countries %&gt;% select(region, country), by = c(&quot;country&quot;))
+
+
+# Used to show the bottom 5 for least improvement and top 5 for greatest improvement within different regions
+
+paste(&quot;Bottom 5 countries with the least improvement within Sub-Saharan Africa&quot;)</code></pre>
+<pre><code>## [1] &quot;Bottom 5 countries with the least improvement within Sub-Saharan Africa&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;Sub-Saharan Africa&quot;) %&gt;% 
+  arrange(percentage_change_mortality_rate) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##             country percentage_change_mortality_rate             region
+## 1           Somalia                             34.6 Sub-Saharan Africa
+## 2              Chad                             50.1 Sub-Saharan Africa
+## 3           Namibia                             51.1 Sub-Saharan Africa
+## 4           Lesotho                             51.5 Sub-Saharan Africa
+## 5 Equatorial Guinea                             54.1 Sub-Saharan Africa</code></pre>
+<pre class="r"><code>paste(&quot;Top 5 countries with the greatest improvement within Sub-Saharan Africa&quot;)</code></pre>
+<pre><code>## [1] &quot;Top 5 countries with the greatest improvement within Sub-Saharan Africa&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;Sub-Saharan Africa&quot;) %&gt;% 
+  arrange(desc(percentage_change_mortality_rate)) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##       country percentage_change_mortality_rate             region
+## 1  Cabo Verde                             90.0 Sub-Saharan Africa
+## 2   Mauritius                             86.1 Sub-Saharan Africa
+## 3  Seychelles                             85.8 Sub-Saharan Africa
+## 4      Malawi                             85.8 Sub-Saharan Africa
+## 5 Gambia, The                             84.0 Sub-Saharan Africa</code></pre>
+<pre class="r"><code>paste(&quot;Bottom 5 countries with the least improvement within Europe &amp; Central Asia&quot;)</code></pre>
+<pre><code>## [1] &quot;Bottom 5 countries with the least improvement within Europe &amp; Central Asia&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;Europe &amp; Central Asia&quot;) %&gt;% 
+  arrange(percentage_change_mortality_rate) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##           country percentage_change_mortality_rate                region
+## 1          Monaco                             64.9 Europe &amp; Central Asia
+## 2    Turkmenistan                             68.2 Europe &amp; Central Asia
+## 3 Slovak Republic                             71.8 Europe &amp; Central Asia
+## 4         Ukraine                             72.8 Europe &amp; Central Asia
+## 5         Moldova                             76.1 Europe &amp; Central Asia</code></pre>
+<pre class="r"><code>paste(&quot;Top 5 countries with the greatest improvement within Europe &amp; Central Asia&quot;)</code></pre>
+<pre><code>## [1] &quot;Top 5 countries with the greatest improvement within Europe &amp; Central Asia&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;Europe &amp; Central Asia&quot;) %&gt;% 
+  arrange(desc(percentage_change_mortality_rate)) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##    country percentage_change_mortality_rate                region
+## 1 Portugal                             96.9 Europe &amp; Central Asia
+## 2   Turkey                             95.3 Europe &amp; Central Asia
+## 3    Italy                             93.4 Europe &amp; Central Asia
+## 4   Cyprus                             93.2 Europe &amp; Central Asia
+## 5   Poland                             92.8 Europe &amp; Central Asia</code></pre>
+<pre class="r"><code>paste(&quot;Bottom 5 countries with the least improvement within Latin America &amp; Caribbean&quot;)</code></pre>
+<pre><code>## [1] &quot;Bottom 5 countries with the least improvement within Latin America &amp; Caribbean&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;Latin America &amp; Caribbean&quot;) %&gt;% 
+  arrange(percentage_change_mortality_rate) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##               country percentage_change_mortality_rate
+## 1        Bahamas, The                             53.9
+## 2              Guyana                             65.1
+## 3            Suriname                             65.6
+## 4       Venezuela, RB                             69.4
+## 5 Trinidad and Tobago                             71.7
+##                      region
+## 1 Latin America &amp; Caribbean
+## 2 Latin America &amp; Caribbean
+## 3 Latin America &amp; Caribbean
+## 4 Latin America &amp; Caribbean
+## 5 Latin America &amp; Caribbean</code></pre>
+<pre class="r"><code>paste(&quot;Top 5 countries with the greatest improvement within Latin America &amp; Caribbean&quot;)</code></pre>
+<pre><code>## [1] &quot;Top 5 countries with the greatest improvement within Latin America &amp; Caribbean&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;Latin America &amp; Caribbean&quot;) %&gt;% 
+  arrange(desc(percentage_change_mortality_rate)) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##               country percentage_change_mortality_rate
+## 1               Chile                             95.1
+## 2                Peru                             93.4
+## 3         El Salvador                             92.0
+## 4             Ecuador                             91.6
+## 5 Antigua and Barbuda                             91.4
+##                      region
+## 1 Latin America &amp; Caribbean
+## 2 Latin America &amp; Caribbean
+## 3 Latin America &amp; Caribbean
+## 4 Latin America &amp; Caribbean
+## 5 Latin America &amp; Caribbean</code></pre>
+<pre class="r"><code>paste(&quot;Bottom 5 countries with the least improvement within East Asia &amp; Pacific&quot;)</code></pre>
+<pre><code>## [1] &quot;Bottom 5 countries with the least improvement within East Asia &amp; Pacific&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;East Asia &amp; Pacific&quot;) %&gt;% 
+  arrange(percentage_change_mortality_rate) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##                     country percentage_change_mortality_rate
+## 1     Micronesia, Fed. Sts.                             42.5
+## 2 Korea, Dem. People’s Rep.                             43.0
+## 3                     Palau                             47.5
+## 4                     Nauru                             54.3
+## 5                    Tuvalu                             67.2
+##                region
+## 1 East Asia &amp; Pacific
+## 2 East Asia &amp; Pacific
+## 3 East Asia &amp; Pacific
+## 4 East Asia &amp; Pacific
+## 5 East Asia &amp; Pacific</code></pre>
+<pre class="r"><code>paste(&quot;Top 5 countries with the greatest improvement within East Asia &amp; Pacific&quot;)</code></pre>
+<pre><code>## [1] &quot;Top 5 countries with the greatest improvement within East Asia &amp; Pacific&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;East Asia &amp; Pacific&quot;) %&gt;% 
+  arrange(desc(percentage_change_mortality_rate)) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##       country percentage_change_mortality_rate              region
+## 1 Korea, Rep.                             97.0 East Asia &amp; Pacific
+## 2   Singapore                             94.3 East Asia &amp; Pacific
+## 3       Japan                             93.2 East Asia &amp; Pacific
+## 4    Thailand                             93.0 East Asia &amp; Pacific
+## 5       China                             91.6 East Asia &amp; Pacific</code></pre>
+<pre class="r"><code>paste(&quot;Bottom 5 countries with the least improvement within South Asia&quot;)</code></pre>
+<pre><code>## [1] &quot;Bottom 5 countries with the least improvement within South Asia&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;South Asia&quot;) %&gt;% 
+  arrange(percentage_change_mortality_rate) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##       country percentage_change_mortality_rate     region
+## 1    Pakistan                             70.8 South Asia
+## 2 Afghanistan                             80.4 South Asia
+## 3       India                             83.1 South Asia
+## 4  Bangladesh                             86.3 South Asia
+## 5      Bhutan                             88.7 South Asia</code></pre>
+<pre class="r"><code>paste(&quot;Top 5 countries with the greatest improvement within South Asia&quot;)</code></pre>
+<pre><code>## [1] &quot;Top 5 countries with the greatest improvement within South Asia&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;South Asia&quot;) %&gt;% 
+  arrange(desc(percentage_change_mortality_rate)) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##      country percentage_change_mortality_rate     region
+## 1   Maldives                             96.9 South Asia
+## 2  Sri Lanka                             91.3 South Asia
+## 3      Nepal                             89.3 South Asia
+## 4     Bhutan                             88.7 South Asia
+## 5 Bangladesh                             86.3 South Asia</code></pre>
+<pre class="r"><code>paste(&quot;Bottom 5 countries with the least improvement within Middle East &amp; North Africa&quot;)</code></pre>
+<pre><code>## [1] &quot;Bottom 5 countries with the least improvement within Middle East &amp; North Africa&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;Middle East &amp; North Africa&quot;) %&gt;% 
+  arrange(percentage_change_mortality_rate) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##              country percentage_change_mortality_rate
+## 1           Djibouti                             63.5
+## 2 West Bank and Gaza                             80.4
+## 3              Malta                             82.4
+## 4               Iraq                             85.1
+## 5        Yemen, Rep.                             86.1
+##                       region
+## 1 Middle East &amp; North Africa
+## 2 Middle East &amp; North Africa
+## 3 Middle East &amp; North Africa
+## 4 Middle East &amp; North Africa
+## 5 Middle East &amp; North Africa</code></pre>
+<pre class="r"><code>paste(&quot;Top 5 countries with the greatest improvement within Middle East &amp; North Africa&quot;)</code></pre>
+<pre><code>## [1] &quot;Top 5 countries with the greatest improvement within Middle East &amp; North Africa&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;Middle East &amp; North Africa&quot;) %&gt;% 
+  arrange(desc(percentage_change_mortality_rate)) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##                country percentage_change_mortality_rate
+## 1                 Oman                             96.7
+## 2              Bahrain                             96.3
+## 3 United Arab Emirates                             96.1
+## 4                Libya                             95.4
+## 5         Saudi Arabia                             95.1
+##                       region
+## 1 Middle East &amp; North Africa
+## 2 Middle East &amp; North Africa
+## 3 Middle East &amp; North Africa
+## 4 Middle East &amp; North Africa
+## 5 Middle East &amp; North Africa</code></pre>
+<pre class="r"><code>paste(&quot;Bottom 5 countries with the least improvement within North America&quot;)</code></pre>
+<pre><code>## [1] &quot;Bottom 5 countries with the least improvement within North America&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;North America&quot;) %&gt;% 
+  arrange(percentage_change_mortality_rate) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##         country percentage_change_mortality_rate        region
+## 1 United States                             77.7 North America
+## 2        Canada                             84.0 North America</code></pre>
+<pre class="r"><code>paste(&quot;Top 5 countries with the greatest improvement within North America&quot;)</code></pre>
+<pre><code>## [1] &quot;Top 5 countries with the greatest improvement within North America&quot;</code></pre>
+<pre class="r"><code>mortality_change_countries %&gt;% 
+  filter(region == &quot;North America&quot;) %&gt;% 
+  arrange(desc(percentage_change_mortality_rate)) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##         country percentage_change_mortality_rate        region
+## 1        Canada                             84.0 North America
+## 2 United States                             77.7 North America</code></pre>
+<pre><code>
+
+Relationship between primary school enrollment and fertility rate
+
+The plot shows a negative relationship between primary school enrollment and fertility rate. The enrollment in a primary school leads to increased opportunity for women in the workforce which from our previous graph, we understand can lead to a reduced fertility rate. Having a child has many implications and the impact on the career of a women and the time away from work needed to bear a child can be a deterrent to having more children.    
+
+
+```r
+ggplot(worldbank_extended, aes(x = SE.PRM.NENR, y = SP.DYN.TFRT.IN))+
+  geom_point(size = 0.1, alpha = 0.5)+
+  geom_smooth(method = &#39;lm&#39;)+
+  labs (title = &quot;Relationship between primary school enrollment and fertility rate&quot;,
+    x = &quot;Primary School Enrollment (%)&quot;,
+    y = &quot;Fertility Rate&quot;)+
+  theme_clean()+
+  facet_wrap(~region)</code></pre>
+<p><img src="index_files/figure-html/primary%20school%20enrollment%20and%20fertility%20rate-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="challenge-1-cdc-covid-19-public-use-data" class="section level1">
+<h1>Challenge 1: CDC COVID-19 Public Use Data</h1>
+<p>Let us revisit the <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf">CDC Covid-19 Case Surveillance Data</a>. There are well over 3 million entries of individual, de-identified patient data. Since this is a large file, I suggest you use <code>vroom</code> to load it and you keep <code>cache=TRUE</code> in the chunk options.</p>
+<pre class="r"><code># file contains 11 variables and 3.66m rows and is well over 380Mb. 
+# It will take time to download
+
+# URL link to CDC to download data
+url &lt;- &quot;https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD&quot;
+
+covid_data &lt;- vroom::vroom(url)%&gt;% 
+  clean_names()</code></pre>
+<p>Covid_19 death rate (%) by age group, sex, and whether the patient had co-morbidities or not:</p>
+<pre class="r"><code>  #Removing useless variables
+removed_val=c(&quot;Missing&quot;, &quot;Unknown&quot;, &quot;Other&quot;, NA)
+
+
+death_rate_condition &lt;- covid_data %&gt;%
+select(medcond_yn, death_yn, sex, age_group) %&gt;% 
+  #Removing the variables linked to &quot;missing&quot;, &quot;unknown&quot;, &quot;Other&quot;   and    NA
+filter(!(death_yn %in% removed_val) ,
+      !(medcond_yn %in% removed_val), 
+      !(sex %in% removed_val),
+      !(age_group %in% removed_val),)  %&gt;%
+mutate(death = ifelse(death_yn == &quot;Yes&quot;, 1, 0), co_mor=
+ifelse(medcond_yn == &quot;Yes&quot;, &quot;With Comorbidities&quot;, &quot;Without
+Comorbidities&quot;)) %&gt;% group_by(age_group, sex, co_mor) %&gt;%
+summarize(death_rate = prop(death))
+
+ggplot(death_rate_condition, aes(x=death_rate, y=age_group)) +
+geom_col(fill=&quot;#000099&quot;, alpha=0.8) + facet_grid(rows=vars(co_mor),cols
+= vars (sex)) +
+  #Scales function seemed to be masked
+scale_x_continuous(labels = scales::percent) +  theme_bw()+
+geom_text(aes(label=round(death_rate*100, 2)),
+position=position_dodge(width=0.8), hjust=-0.06, size=1.8) + 
+labs (title = &quot;Covid death % by age group, sex and presence of co-morbidities&quot;, caption=&quot;Source: CDC&quot;, x= &quot;&quot;, y= &quot;&quot;) + theme(text=element_text(size=5), axis.text.y = element_text(size = 4))</code></pre>
+<p><img src="index_files/figure-html/covid_challenge1.1-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>Covid_19 death rate (%) by age group, sex, and whether the patient was admited
+to Intensive Care Unit (ICU) or not:</p>
+<pre class="r"><code>  #Removing useless variables
+removed_val=c(&quot;Missing&quot;, &quot;Unknown&quot;, &quot;Other&quot;, NA)
+
+death_rate_icu &lt;- covid_data %&gt;%
+select(icu_yn, death_yn, sex, age_group) %&gt;% 
+  #Removing the variables linked to &quot;missing&quot;, &quot;unknown&quot;, &quot;Other&quot;   and    NA 
+filter(!(death_yn %in% removed_val) ,
+      !(icu_yn %in% removed_val), 
+      !(sex %in% removed_val),
+      !(age_group %in% removed_val),)  %&gt;%
+mutate(death = ifelse(death_yn == &quot;Yes&quot;, 1, 0), 
+icu= ifelse(icu_yn == &quot;Yes&quot;, &quot;Admitted to ICU&quot;, &quot;No ICU&quot;)) %&gt;%
+group_by(age_group, sex, icu) %&gt;% 
+summarize(death_rate = prop(death))
+  
+ggplot(death_rate_icu, aes(x=death_rate, y=age_group)) +  geom_col(fill=&quot;#FF0000&quot;, alpha=0.8) + 
+facet_grid(rows=vars(icu), cols = vars (sex)) +
+  #Scales function seemed to be masked
+scale_x_continuous(labels = scales::percent) +  theme_bw()+
+geom_text(aes(label=round(death_rate*100, 2)),position=position_dodge(width=0.8), hjust=-0.06, size=1.8) + 
+labs (title = &quot;Covid death % by age group, sex and and whether patient was admitted to ICU&quot;, caption=&quot;Source: CDC&quot;, x= &quot;&quot;, y= &quot;&quot;) +
+theme(text=element_text(size=5), axis.text.y = element_text(size = 4))</code></pre>
+<p><img src="index_files/figure-html/covid_challenge1.2-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Example graphs from Kostis
+knitr::include_graphics(here::here(&quot;images&quot;, &quot;covid_death_rate_comorbidities.png&quot;), error = FALSE)</code></pre>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/covid_death_rate_comorbidities.png" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>knitr::include_graphics(here::here(&quot;images&quot;, &quot;covid_death_rate_icu.png&quot;), error = FALSE)</code></pre>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/covid_death_rate_icu.png" style="display: block; margin: auto;" /></p>
+</div>
+<div id="challenge-2-excess-rentals-in-tfl-bike-sharing" class="section level1">
+<h1>Challenge 2: Excess rentals in TfL bike sharing</h1>
+<p>Recall the TfL data on how many bikes were hired every single day. We can get the latest data by running the following</p>
+<pre class="r"><code>url &lt;- &quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&quot;
+
+# Download TFL data to temporary file
+httr::GET(url, write_disk(bike.temp &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
+<pre><code>## Error in write_disk(bike.temp &lt;- tempfile(fileext = &quot;.xlsx&quot;)): could not find function &quot;write_disk&quot;</code></pre>
+<pre class="r"><code># Use read_excel to read it as dataframe
+bike0 &lt;- read_excel(bike.temp,
+                   sheet = &quot;Data&quot;,
+                   range = cell_cols(&quot;A:B&quot;))</code></pre>
+<pre><code>## Error in read_excel(bike.temp, sheet = &quot;Data&quot;, range = cell_cols(&quot;A:B&quot;)): could not find function &quot;read_excel&quot;</code></pre>
+<pre class="r"><code># change dates to get year, month, and week
+bike &lt;- bike0 %&gt;% 
+  clean_names() %&gt;% 
+  rename (bikes_hired = number_of_bicycle_hires) %&gt;% 
+  mutate (year = year(day),
+          month = lubridate::month(day, label = TRUE),
+          week = isoweek(day))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;bike0&#39; not found</code></pre>
+<pre class="r"><code>bike</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;bike&#39; not found</code></pre>
+<p>We can easily create a facet grid that plots bikes hired by month and year.</p>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/tfl_distributions_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>Look at May and Jun and compare 2020 with the previous years. What’s happening?
+May and Jun in 2020 experienced a sharp decrease in the total counts per month (smaller total area of the curve) and a wider spread. The reducing total volume can be explained bu the lockdown which leads to more people working from home and less commuting in general. The wider spread, especially increasing number of days with more than 40K counts, can be explaind be the alternative effect as people start preferring biking over public transportation like bus or subway.</p>
+<p>However, the challenge I want you to work on is to reproduce the following two graphs.</p>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/tfl_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The second one looks at percentage changes from the expected level of weekly rentals. The two grey shaded rectangles correspond to the second (weeks 14-26) and fourth (weeks 40-52) quarters.</p>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/tfl_weekly.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>For both of these graphs, you have to calculate the expected number of rentals per week or month between 2015-2019 and then, see how each week/month of 2020 compares to the expected rentals. Think of the calculation <code>excess_rentals = actual_rentals - expected_rentals</code>.</p>
+<p>Should you use the mean or the median to calculate your expected rentals? Why?
+Mean, as they are not far from being normally distributed.</p>
+<p>In creating your plots, you may find these links useful:</p>
+<ul>
+<li><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="uri">https://ggplot2.tidyverse.org/reference/geom_ribbon.html</a></li>
+<li><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="uri">https://ggplot2.tidyverse.org/reference/geom_tile.html</a></li>
+<li><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="uri">https://ggplot2.tidyverse.org/reference/geom_rug.html</a></li>
+</ul>
+<pre class="r"><code>actual_rentals&lt;-bike %&gt;%
+  filter(year %in% c(&quot;2015&quot;,&quot;2016&quot;,&quot;2017&quot;,&quot;2018&quot;,&quot;2019&quot;,&quot;2020&quot;)) %&gt;% 
+  group_by(month,year) %&gt;% 
+  summarise(actual=mean(bikes_hired))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;bike&#39; not found</code></pre>
+<pre class="r"><code>actual_rentals</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;actual_rentals&#39; not found</code></pre>
+<pre class="r"><code>expected_rentals &lt;- actual_rentals %&gt;%
+  filter(year!=&quot;2020&quot;) %&gt;% 
+  group_by(month) %&gt;% 
+  summarise(expected=mean(actual))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;actual_rentals&#39; not found</code></pre>
+<pre class="r"><code>expected_rentals</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;expected_rentals&#39; not found</code></pre>
+<pre class="r"><code>monthly_benchmark &lt;- left_join(actual_rentals,expected_rentals,&quot;month&quot;,&quot;year&quot;)</code></pre>
+<pre><code>## Error in left_join(actual_rentals, expected_rentals, &quot;month&quot;, &quot;year&quot;): object &#39;actual_rentals&#39; not found</code></pre>
+<pre class="r"><code>ggplot(data=monthly_benchmark, aes(x=month))+
+  #plotting two lines, blue for expected and black for actual rentals
+  geom_line(aes(y=actual, group = 1), color= &quot;black&quot;,size=0.8) +
+  geom_line(aes(y=expected, group = 1), color= &quot;blue&quot;, size=2.0) +
+  facet_wrap(~year)+
+  geom_ribbon(aes(x = month, ymin = actual, ymax = expected))+
+  scale_fill_manual(values=c(&quot;green&quot;, &quot;red&quot;), name=&quot;fill&quot;)+
+  labs (
+    title = &quot;Monthly changes in TfL bike rentals&quot;,
+    subtitle= &quot;Change in monthly average shown in blue and calculated between 2015-2019&quot;,
+    caption=&quot;Source: TfL, London Data Store&quot;,
+    y= &quot;Bike rentals&quot;
+  )+
+  theme(
+    axis.title.x=element_blank(),
+    legend.position=&quot;none&quot;
+  )</code></pre>
+<pre><code>## Error in ggplot(data = monthly_benchmark, aes(x = month)): object &#39;monthly_benchmark&#39; not found</code></pre>
+<pre class="r"><code>#calculating monthly actual and expected number of rentals
+actual_rentals&lt;-bike %&gt;%
+  filter(year %in% c(&quot;2015&quot;,&quot;2016&quot;,&quot;2017&quot;,&quot;2018&quot;,&quot;2019&quot;,&quot;2020&quot;)) %&gt;% 
+  group_by(week, year) %&gt;% 
+  summarise(actual=mean(bikes_hired))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;bike&#39; not found</code></pre>
+<pre class="r"><code>actual_rentals</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;actual_rentals&#39; not found</code></pre>
+<pre class="r"><code>expected_rentals &lt;- actual_rentals %&gt;%
+  filter(year!=&quot;2020&quot;) %&gt;% 
+  group_by(week) %&gt;% 
+  summarise(expected=mean(actual))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;actual_rentals&#39; not found</code></pre>
+<pre class="r"><code>expected_rentals</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;expected_rentals&#39; not found</code></pre>
+<pre class="r"><code>weekly_benchmark &lt;- left_join(actual_rentals,expected_rentals,&quot;week&quot;,&quot;year&quot;)</code></pre>
+<pre><code>## Error in left_join(actual_rentals, expected_rentals, &quot;week&quot;, &quot;year&quot;): object &#39;actual_rentals&#39; not found</code></pre>
+<pre class="r"><code>ggplot(data=weekly_benchmark, aes(x=week))+
+  geom_line(aes(y=actual, group = 1), color= &quot;black&quot;,size=0.8) +
+  geom_line(aes(y=expected, group = 1), color= &quot;blue&quot;, size=2.0) +
+  geom_ribbon(aes(x = week, ymin = actual, ymax = expected))+
+  facet_wrap(~year)+
+  labs (
+    title = &quot;Weekly changes in TfL bike rentals&quot;,
+    subtitle= &quot;Change in monthly average shown in blue and calculated between 2015-2019&quot;,
+    caption=&quot;Source: TfL, London Data Store&quot;,
+    y= &quot;Bike rentals&quot;
+  )+
+  theme(
+    axis.title.x=element_blank(),
+    legend.position=&quot;none&quot;
+  )</code></pre>
+<pre><code>## Error in ggplot(data = weekly_benchmark, aes(x = week)): object &#39;weekly_benchmark&#39; not found</code></pre>
+<pre class="r"><code>#calculating monthly actual and expected number of rentals
+actual_rentals&lt;-bike %&gt;%
+  filter(year %in% c(&quot;2015&quot;,&quot;2016&quot;,&quot;2017&quot;,&quot;2018&quot;,&quot;2019&quot;,&quot;2020&quot;)) %&gt;% 
+  group_by(week, year) %&gt;% 
+  summarise(actual=mean(bikes_hired))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;bike&#39; not found</code></pre>
+<pre class="r"><code>actual_rentals</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;actual_rentals&#39; not found</code></pre>
+<pre class="r"><code>expected_rentals &lt;- actual_rentals %&gt;%
+  filter(year!=&quot;2020&quot;) %&gt;% 
+  group_by(week) %&gt;% 
+  summarise(expected=mean(actual))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;actual_rentals&#39; not found</code></pre>
+<pre class="r"><code>expected_rentals</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;expected_rentals&#39; not found</code></pre>
+<pre class="r"><code>weekly_changes &lt;- left_join(actual_rentals,expected_rentals,&quot;week&quot;,&quot;year&quot;) %&gt;%
+  mutate (perc_diff_rentals = (actual - expected)/expected 
+          )</code></pre>
+<pre><code>## Error in left_join(actual_rentals, expected_rentals, &quot;week&quot;, &quot;year&quot;): object &#39;actual_rentals&#39; not found</code></pre>
+<pre class="r"><code>weekly_changes</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;weekly_changes&#39; not found</code></pre>
+<pre class="r"><code>wks=c(13,26,39,53)
+
+ggplot(weekly_changes)+
+  #creating the grey tiles in plot background
+  geom_rect(aes(xmin = 13, xmax = 26, ymin = -Inf, ymax = Inf),
+                   fill = &quot;#f0f0f0&quot;, alpha = 0.002)+
+  geom_rect(aes(xmin = 39, xmax = 53, ymin = -Inf, ymax = Inf),
+                   fill = &quot;#f0f0f0&quot;, alpha = 0.002)+
+  #creating a ribbon with green for positive diff and red for negative diff
+  geom_ribbon(aes(x = week, ymin = 0, ymax = perc_diff_rentals, fill =perc_diff_rentals&lt;0, alpha=0.30))+
+  geom_line(aes(x= week, y = perc_diff_rentals, alpha=0.3))+
+  #creating the rug
+  geom_rug(data = . %&gt;%  filter(perc_diff_rentals&gt; 0),
+           mapping=aes(x=week, y= perc_diff_rentals), color= &quot;#a1d99b&quot;, sides=&quot;b&quot;)+
+  geom_rug(data = . %&gt;%  filter(perc_diff_rentals&lt; 0),
+          mapping=aes(x=week, y= perc_diff_rentals), color= &quot;#a50f15&quot;, sides=&quot;b&quot;)+
+  facet_wrap(~year)+
+  theme_pander()+
+  labs (
+    title = &quot;Weekly changes in TfL bike rentals&quot;,
+    subtitle= &quot;% change from weekly averages calculated between 2015-2019&quot;,
+    caption=&quot;Source: TfL, London Data Store&quot;
+  )+
+  theme(
+    axis.title.y=element_blank(),
+    legend.position=&quot;none&quot;
+  )+
+  scale_y_continuous(labels = scales::percent)+
+  #defining ticks on x-axis
+  scale_x_continuous(breaks=wks)+
+  scale_fill_manual(values=c(&quot;#a1d99b&quot;, &quot;#bd0026&quot;), name=&quot;fill&quot;)</code></pre>
+<pre><code>## Error in ggplot(weekly_changes): object &#39;weekly_changes&#39; not found</code></pre>
+</div>
+<div id="youth-risk-behavior-surveillance" class="section level1">
+<h1>Youth Risk Behavior Surveillance</h1>
+<p>Every two years, the Centers for Disease Control and Prevention conduct the <a href="https://www.cdc.gov/healthyyouth/data/yrbs/index.htm">Youth Risk Behavior Surveillance System (YRBSS)</a> survey, where it takes data from high schoolers (9th through 12th grade), to analyze health patterns. You will work with a selected group of variables from a random sample of observations during one of the years the YRBSS was conducted.</p>
+<div id="load-the-data" class="section level2">
+<h2>Load the data</h2>
+<p>This data is part of the <code>openintro</code> textbook. We load and inspect it. There are observations on 13 different variables, some categorical and some numerical.</p>
+<pre class="r"><code>#Downloading the data
+data(yrbss)
+
+# Examining the data 
+glimpse(yrbss)</code></pre>
+<pre><code>## Error in glimpse(yrbss): object &#39;yrbss&#39; not found</code></pre>
+<pre class="r"><code>view(yrbss)</code></pre>
+<pre><code>## Error in view(yrbss): object &#39;yrbss&#39; not found</code></pre>
+<pre class="r"><code>skim(yrbss)</code></pre>
+<pre><code>## Error in skim(yrbss): object &#39;yrbss&#39; not found</code></pre>
+</div>
+<div id="exploratory-data-analysis" class="section level2">
+<h2>Exploratory Data Analysis</h2>
+<p>We first start with analyzing the <code>weight</code> of participants in kilograms. We use visualization and summary statistic to describe the distribution of weights. In addition, we find 1004 NA values.</p>
+<pre class="r"><code># Analyzing the data regarding the weight
+summary(yrbss$weight)</code></pre>
+<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;yrbss&#39; not found</code></pre>
+<pre class="r"><code>#Creating a variable without the missing values
+yrbss_filtered &lt;- yrbss %&gt;%
+  filter(!is.na(weight))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;yrbss&#39; not found</code></pre>
+<pre class="r"><code>#creating a plot excluding the missing variables
+ggplot(yrbss_filtered, aes(x=weight)) +
+  geom_boxplot() +
+  labs (title = &quot;Weight distribution among high school students&quot;,
+    subtitle= &quot;Grades 9-12&quot;,
+    caption=&quot;Source: Youth Risk Behavior Surveillance System, CDC&quot;,
+    x= &quot;Weight (Kg)&quot;) +
+  theme_clean()</code></pre>
+<pre><code>## Error in ggplot(yrbss_filtered, aes(x = weight)): object &#39;yrbss_filtered&#39; not found</code></pre>
+<pre class="r"><code>#creating a histogram excluding the missing variables
+ggplot(yrbss_filtered, aes(x=weight)) +
+  geom_histogram() +
+  labs (title = &quot;Weight distribution among high school students&quot;,
+    subtitle= &quot;Grades 9-12&quot;,
+    caption=&quot;Source: Youth Risk Behavior Surveillance System, CDC&quot;,
+    x= &quot;Weight (Kg)&quot;) +
+  theme_clean()</code></pre>
+<pre><code>## Error in ggplot(yrbss_filtered, aes(x = weight)): object &#39;yrbss_filtered&#39; not found</code></pre>
+<pre class="r"><code>#Viewing the density just for purpose of our interest. 
+ggplot(yrbss_filtered,aes(x=weight)) +
+  geom_density() +
+  labs (title = &quot;Weight distribution among high school students&quot;,
+    subtitle= &quot;Grades 9-12&quot;,
+    caption=&quot;Source: Youth Risk Behavior Surveillance System, CDC&quot;,
+    x=&quot;Weight (Kg)&quot;,
+    y=&quot;Density&quot;) +
+  theme_clean()</code></pre>
+<pre><code>## Error in ggplot(yrbss_filtered, aes(x = weight)): object &#39;yrbss_filtered&#39; not found</code></pre>
+<pre class="r"><code>#calculating some statistics of the dataset
+mean_weight &lt;- mean(yrbss_filtered$weight)</code></pre>
+<pre><code>## Error in mean(yrbss_filtered$weight): object &#39;yrbss_filtered&#39; not found</code></pre>
+<pre class="r"><code>median_weight &lt;- median(yrbss_filtered$weight)</code></pre>
+<pre><code>## Error in rlang::is_formula(x): object &#39;yrbss_filtered&#39; not found</code></pre>
+<pre class="r"><code>max_weight &lt;- max(yrbss_filtered$weight)</code></pre>
+<pre><code>## Error in rlang::is_formula(x): object &#39;yrbss_filtered&#39; not found</code></pre>
+<pre class="r"><code>min_weight &lt;- min(yrbss_filtered$weight)</code></pre>
+<pre><code>## Error in rlang::is_formula(x): object &#39;yrbss_filtered&#39; not found</code></pre>
+<pre class="r"><code>sd_weight &lt;- sd(yrbss_filtered$weight)</code></pre>
+<pre><code>## Error in rlang::is_formula(x): object &#39;yrbss_filtered&#39; not found</code></pre>
+<pre class="r"><code>mean_weight </code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_weight&#39; not found</code></pre>
+<pre class="r"><code>median_weight </code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;median_weight&#39; not found</code></pre>
+<pre class="r"><code>max_weight</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;max_weight&#39; not found</code></pre>
+<pre class="r"><code>min_weight</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;min_weight&#39; not found</code></pre>
+<pre class="r"><code>sd_weight</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;sd_weight&#39; not found</code></pre>
+<pre class="r"><code>paste(&quot;Given the statistics, we can examine that normal weight of high schoolers is around 64kg. However, some variablity is noticeable.&quot;)</code></pre>
+<pre><code>## [1] &quot;Given the statistics, we can examine that normal weight of high schoolers is around 64kg. However, some variablity is noticeable.&quot;</code></pre>
+<p>Next, we consider the possible relationship between a high schooler’s weight and their physical activity.</p>
+<pre class="r"><code># We create a new variable `physical_3plus`, which will be `yes` if they are physically active for at least 3 days a week, and `no` otherwise.
+yrbss &lt;- yrbss %&gt;% 
+  mutate(physical_3plus = ifelse(physically_active_7d &gt;= 3, &quot;yes&quot;, &quot;no&quot;))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;yrbss&#39; not found</code></pre>
+<p>We provide a 95% confidence interval for the population proportion of high schools that are <em>NOT</em> active 3 or more days per week.</p>
+<pre class="r"><code>#Calculating the proportion of students more than 3 days and less than 3 days of physical activities.
+Stats_physical&lt;- yrbss %&gt;% 
+  filter(!is.na(physical_3plus)) %&gt;% 
+  group_by(physical_3plus) %&gt;% 
+  summarise(count = n()) %&gt;% 
+  mutate(prop= count/sum(count))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;yrbss&#39; not found</code></pre>
+<pre class="r"><code>#We create a 95% confidence interval for the proportion of high school that are not active 3 or more days per week. 
+se=sqrt(Stats_physical$prop[1]*(1-Stats_physical$prop[1])/Stats_physical$count[1])</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;Stats_physical&#39; not found</code></pre>
+<pre class="r"><code>ciupper=Stats_physical$prop[1]+1.96*se</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;Stats_physical&#39; not found</code></pre>
+<pre class="r"><code>cilower=Stats_physical$prop[1]-1.96*se</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;Stats_physical&#39; not found</code></pre>
+<pre class="r"><code>#For testing purposes, We create also a bootstrapped 95% confidence interval for the proportion of high school that are not active 3 or more days per week.
+Bootstrapped_CI &lt;- yrbss %&gt;%
+  specify(response = physical_3plus, success = &quot;no&quot;) %&gt;%
+  generate(reps = 1000, type = &quot;bootstrap&quot;) %&gt;%
+  calculate(stat = &quot;prop&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;yrbss&#39; not found</code></pre>
+<pre class="r"><code>percentile_ci &lt;- Bootstrapped_CI %&gt;%
+  get_ci(level = 0.95, type = &quot;percentile&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;Bootstrapped_CI&#39; not found</code></pre>
+<pre class="r"><code>percentile_ci</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;percentile_ci&#39; not found</code></pre>
+<p>We make a boxplot of <code>physical_3plus</code> vs. <code>weight</code>.</p>
+<pre class="r"><code># We create a boxplot to see a possible relationship between weight and physical activity.
+physical_days_filtered &lt;- yrbss %&gt;% 
+  filter(!is.na(physical_3plus))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;yrbss&#39; not found</code></pre>
+<pre class="r"><code>  ggplot(physical_days_filtered, aes(x=physical_3plus, y=weight)) +
+  geom_boxplot() + 
+  labs (title = &quot;Relationship between high schooler’s weight and the physical activity &quot;,
+    subtitle= &quot;Grades 9-12&quot;,
+    caption=&quot;Source: Youth Risk Behavior Surveillance System, CDC&quot;,
+    y=&quot;Weight (Kg)&quot;,
+    x=&quot;More than 3 days of physical activities a week (No/Yes)&quot;
+  )+
+  theme_clean()</code></pre>
+<pre><code>## Error in ggplot(physical_days_filtered, aes(x = physical_3plus, y = weight)): object &#39;physical_days_filtered&#39; not found</code></pre>
+<pre class="r"><code>  paste(&quot;The relationship between the two variables is not extremely clear. However, you can see the median weight of the high schoolers who are doing physical activies more than 3 days in a week to be higher. We were expecting it to be the opposite. However, this is potentially due to the fact that muscle mass does weight more than fat. Still, when looking at extreme values, the no category has higher and lower values. This could be due to the fact that it holds very obese people as well as people with potential mental diseases such as Anorexia&quot;)</code></pre>
+<pre><code>## [1] &quot;The relationship between the two variables is not extremely clear. However, you can see the median weight of the high schoolers who are doing physical activies more than 3 days in a week to be higher. We were expecting it to be the opposite. However, this is potentially due to the fact that muscle mass does weight more than fat. Still, when looking at extreme values, the no category has higher and lower values. This could be due to the fact that it holds very obese people as well as people with potential mental diseases such as Anorexia&quot;</code></pre>
+</div>
+<div id="confidence-interval" class="section level2">
+<h2>Confidence Interval</h2>
+<p>We also compare the means of the distributions using either a confidence interval or a hypothesis test. We must ignore any missing values by setting the <code>na.rm = TRUE</code>.</p>
+<pre class="r"><code>#We compare the means of the distributions using a confidence interval.
+yrbss %&gt;%
+  group_by(physical_3plus) %&gt;%
+  filter(!is.na(physical_3plus)) %&gt;% 
+  summarise(mean_weight = mean(weight, na.rm = TRUE),
+            sd_weight = sd(weight, na.rm=TRUE),
+            count = n(),
+            se_weight = sd_weight/sqrt(count),
+            t_critical = qt(0.975, count-1), 
+            margin_of_error = t_critical * se_weight,
+            lower = mean_weight - t_critical * se_weight,
+            upper = mean_weight + t_critical * se_weight
+            )</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;yrbss&#39; not found</code></pre>
+<p>There is an observed difference of about 1.77kg (68.44 - 66.67), and we notice that the two confidence intervals do not overlap. It seems that the difference is at least 95% statistically significant. Let us also conduct a hypothesis test.</p>
+</div>
+<div id="hypothesis-test-with-formula" class="section level2">
+<h2>Hypothesis test with formula</h2>
+<p>We write the null and alternative hypotheses for testing whether mean weights are different for those who exercise at least times a week and those who don’t.</p>
+<pre class="r"><code>t.test(weight ~ physical_3plus, data = yrbss)</code></pre>
+<pre><code>## Error in eval(m$data, parent.frame()): object &#39;yrbss&#39; not found</code></pre>
+</div>
+<div id="hypothesis-test-with-infer" class="section level2">
+<h2>Hypothesis test with <code>infer</code></h2>
+<p>Next, we will introduce a new function, <code>hypothesize</code>, that falls into the infer workflow. You will use this method for conducting hypothesis tests. But first, we need to initialize the test, which we will save as <code>obs_diff</code>.</p>
+<pre class="r"><code>obs_diff &lt;- yrbss %&gt;%
+  specify(weight ~ physical_3plus) %&gt;%
+  calculate(stat = &quot;diff in means&quot;, order = c(&quot;yes&quot;, &quot;no&quot;))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;yrbss&#39; not found</code></pre>
+<p>We simulate the test on the null distribution, which we will save as null.</p>
+<pre class="r"><code>null_dist &lt;- yrbss %&gt;%
+  specify(weight ~ physical_3plus) %&gt;%
+  hypothesize(null = &quot;independence&quot;) %&gt;%
+  generate(reps = 1000, type = &quot;permute&quot;) %&gt;%
+  calculate(stat = &quot;diff in means&quot;, order = c(&quot;yes&quot;, &quot;no&quot;))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;yrbss&#39; not found</code></pre>
+<p>We can visualize this null distribution with the following code:</p>
+<pre class="r"><code>ggplot(data = null_dist, aes(x = stat)) +
+  geom_histogram() +
+theme_clean()+
+  labs(
+    title = &quot;Visualization of the null distribution&quot;,
+    y=&quot;Count&quot;,
+    x=&quot;mean differences&quot;
+  )</code></pre>
+<pre><code>## Error in ggplot(data = null_dist, aes(x = stat)): object &#39;null_dist&#39; not found</code></pre>
+</div>
+</div>
+<div id="imdb-ratings-differences-between-directors" class="section level1">
+<h1>IMDB ratings: Differences between directors</h1>
+<p>We will explore whether the mean IMDB rating for Steven Spielberg and Tim Burton are the same or not. I have already calculated the confidence intervals for the mean ratings of these two directors and as you can see they overlap.</p>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/directors.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>First, I would like you to reproduce this graph. You may find <code>geom_errorbar()</code> and <code>geom_rect()</code> useful.</p>
+<p>In addition, you will run a hpothesis test. You should use both the <code>t.test</code> command and the <code>infer</code> package to simulate from a null distribution, where you assume zero difference between the two.</p>
+<blockquote>
+<p>Before anything, write down the null and alternative hypotheses, as well as the resulting test statistic and the associated t-stat or p-value. At the end of the day, what do you conclude?</p>
+</blockquote>
+<p>We will load the data and examine its structure first.</p>
+<pre class="r"><code>movies &lt;- read_csv(here::here(&quot;data&quot;, &quot;movies.csv&quot;))</code></pre>
+<pre><code>## Error: &#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/data/movies.csv&#39; does not exist.</code></pre>
+<pre class="r"><code>glimpse(movies)</code></pre>
+<pre><code>## Rows: 2,961
+## Columns: 11
+## $ title               &lt;chr&gt; &quot;Avatar&quot;, &quot;Titanic&quot;, &quot;Jurassic World&quot;, &quot;The Aveng…
+## $ genre               &lt;chr&gt; &quot;Action&quot;, &quot;Drama&quot;, &quot;Action&quot;, &quot;Action&quot;, &quot;Action&quot;, …
+## $ director            &lt;chr&gt; &quot;James Cameron&quot;, &quot;James Cameron&quot;, &quot;Colin Trevorro…
+## $ year                &lt;dbl&gt; 2009, 1997, 2015, 2012, 2008, 1999, 1977, 2015, 2…
+## $ duration            &lt;dbl&gt; 178, 194, 124, 173, 152, 136, 125, 141, 164, 93, …
+## $ gross               &lt;dbl&gt; 7.61e+08, 6.59e+08, 6.52e+08, 6.23e+08, 5.33e+08,…
+## $ budget              &lt;dbl&gt; 2.37e+08, 2.00e+08, 1.50e+08, 2.20e+08, 1.85e+08,…
+## $ cast_facebook_likes &lt;dbl&gt; 4834, 45223, 8458, 87697, 57802, 37723, 13485, 92…
+## $ votes               &lt;dbl&gt; 886204, 793059, 418214, 995415, 1676169, 534658, …
+## $ reviews             &lt;dbl&gt; 3777, 2843, 1934, 2425, 5312, 3917, 1752, 1752, 3…
+## $ rating              &lt;dbl&gt; 7.9, 7.7, 7.0, 8.1, 9.0, 6.5, 8.7, 7.5, 8.5, 7.2,…</code></pre>
+<p>H0: The mean IMDB rating for Steven Spielberg and Tim Burton are the same.</p>
+<p>H1: The mean IMDB rating for Steven Spielberg and Tim Burton are not the same.</p>
+<p>Resulting Test Statistics: t-stat &gt; 1.96 (p-value of 0.05)</p>
+<pre class="r"><code>#create dataframe for Steven Spielberg and Tim Burton&#39;s movies and calculate their corresponding stats values
+movies_plot &lt;- movies %&gt;%
+  group_by(director)%&gt;%
+  filter(director==&quot;Steven Spielberg&quot; | director==&quot;Tim Burton&quot;) %&gt;%
+  mutate(count = n(),  #number of movies
+         mean_rating=mean(rating), #mean
+         sd_rating = sd(rating, na.rm=TRUE),  #standard deviation
+         se_rating = sd_rating/sqrt(count),  #standard error
+         t_critical = qt(0.975, count-1),  #critical value of t
+         margin_of_error = t_critical * se_rating, #margin of error
+         upper = mean_rating + t_critical * se_rating,  #upper bound
+         lower = mean_rating - t_critical * se_rating  #lower bound
+         )
+movies_plot</code></pre>
+<pre><code>## # A tibble: 39 x 19
+## # Groups:   director [2]
+##    title genre director  year duration  gross budget cast_facebook_l…  votes
+##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;            &lt;dbl&gt;  &lt;dbl&gt;
+##  1 E.T.… Fami… Steven …  1982      120 4.35e8 1.05e7             2811 281842
+##  2 Jura… Adve… Steven …  1993      127 3.57e8 6.30e7             2129 613473
+##  3 Alic… Adve… Tim Bur…  2010      108 3.34e8 2.00e8            79957 306320
+##  4 Alic… Adve… Tim Bur…  2010      108 3.34e8 2.00e8            79957 306336
+##  5 Indi… Acti… Steven …  2008      122 3.17e8 1.85e8            14959 333847
+##  6 Jaws  Adve… Steven …  1975      130 2.60e8 8.00e6             2047 412454
+##  7 Batm… Acti… Tim Bur…  1989      126 2.51e8 3.50e7             2725 269033
+##  8 Raid… Acti… Steven …  1981      115 2.42e8 1.80e7            12906 661017
+##  9 War … Adve… Steven …  2005      116 2.34e8 1.32e8            12758 334345
+## 10 The … Acti… Steven …  1997      129 2.29e8 7.30e7             1635 278362
+## # … with 29 more rows, and 10 more variables: reviews &lt;dbl&gt;, rating &lt;dbl&gt;,
+## #   count &lt;int&gt;, mean_rating &lt;dbl&gt;, sd_rating &lt;dbl&gt;, se_rating &lt;dbl&gt;,
+## #   t_critical &lt;dbl&gt;, margin_of_error &lt;dbl&gt;, upper &lt;dbl&gt;, lower &lt;dbl&gt;</code></pre>
+<pre class="r"><code>t.test(rating ~ movies_plot$t_critical, data = movies_plot)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  rating by movies_plot$t_critical
+## t = 3, df = 31, p-value = 0.01
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.16 1.13
+## sample estimates:
+## mean in group 2.07387306790403 mean in group 2.13144954555978 
+##                           7.57                           6.93</code></pre>
+<p>t &gt; 1.96 (p-value &lt; 0.05), so we are rejecting the null.
+we conclude that the mean IMDB rating for Steven Spielberg and Tim Burton are not the same.</p>
+<p>Below, we will reproduce the pilot above.</p>
+<pre class="r"><code>library(ggThemeAssist)
+
+#colors selection
+colors = ifelse(movies_plot$director == &quot;Steven Spielberg&quot;, &quot;orange&quot;, &quot;green&quot;)
+reorder_colors = ifelse(movies_plot$director == &quot;Tim Burton&quot;, &quot;orange&quot;, &quot;green&quot;)
+
+#creating the graph using rectanglefor the intersection areas, adding coordinates and adapting design 
+movies_boxplot &lt;- ggplot() +
+  geom_errorbar(movies_plot, 
+                mapping = aes(x=rating, y=reorder(director, rating), xmax=upper, xmin=lower ), 
+                width=0.3, size=2, color=colors) +
+  geom_point(movies_plot, mapping = aes(x=mean_rating, y = director, color=reorder_colors)) +
+  geom_text(aes(label=round(movies_plot$mean_rating, digits = 2)),hjust=0, vjust=0, x=(movies_plot$mean_rating), y=movies_plot$director, 
+            size=5, vjust = -1.5) +
+  geom_text(aes(label=round(movies_plot$upper, digits = 2)),hjust=0, vjust=0, x=((movies_plot$upper)), y=movies_plot$director, size=4) +
+  geom_text(aes(label=round(movies_plot$lower, digits = 2)),hjust=0, vjust=0, x=(movies_plot$lower), y=movies_plot$director, size=4) +
+  labs(title = &quot;Do Spielberg and Burton have the same mean IMBD rating?&quot;, 
+       x = &quot;Mean IMDB Rating&quot;, 
+       subtitle = &quot;95% confidence intervals overlap&quot;) +
+  geom_rect(movies_plot, mapping = aes(x=rating, y=reorder(director, rating), xmin=movies_plot$upper[4], 
+                                       xmax=movies_plot$lower[1], ymin=0, ymax=3), fill = &quot;grey&quot;, alpha = 0.03) +
+  
+  scale_x_continuous(expand=c(-0.15,-0.15),breaks= c(6.5, 7.0, 7.5))  + 
+  theme(legend.position = &quot;none&quot;) + #remove the plot legend
+  theme_bw() #white background
+  
+  
+movies_boxplot</code></pre>
+<p><img src="index_files/figure-html/Same%20Rating%20or%20Not-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="omega-group-plc--pay-discrimination" class="section level1">
+<h1>Omega Group plc- Pay Discrimination</h1>
+<p>At the last board meeting of Omega Group Plc., the headquarters of a large multinational company, the issue was raised that women were being discriminated in the company, in the sense that the salaries were not the same for male and female executives. A quick analysis of a sample of 50 employees (of which 24 men and 26 women) revealed that the average salary for men was about 8,700 higher than for women. This seemed like a considerable difference, so it was decided that a further analysis of the company salaries was warranted.</p>
+<p>The objective is to find out whether there is indeed a significant difference between the salaries of men and women, and whether the difference is due to discrimination or whether it is based on another, possibly valid, determining factor.</p>
+<p>This is used to load the data and view the omega.csv data.</p>
+<pre class="r"><code>omega &lt;- read_csv(here::here(&quot;data&quot;, &quot;omega.csv&quot;))</code></pre>
+<pre><code>## Error: &#39;/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/data/omega.csv&#39; does not exist.</code></pre>
+<pre class="r"><code>glimpse(omega) # examine the data frame</code></pre>
+<pre><code>## Error in glimpse(omega): object &#39;omega&#39; not found</code></pre>
+<div id="relationship-salary---gender" class="section level2">
+<h2>Relationship Salary - Gender</h2>
+<p>Calculated summary statistics on salary by gender. Also, created and printed a dataframe where, for each gender, you show the mean, SD, sample size, the t-critical, the SE, the margin of error, and the low/high endpoints of a 95% confidence interval.</p>
+<pre class="r"><code># Summary Statistics of salary by gender
+mosaic::favstats (salary ~ gender, data=omega)</code></pre>
+<pre><code>## Error in mosaic::favstats(salary ~ gender, data = omega): object &#39;omega&#39; not found</code></pre>
+<pre class="r"><code># Dataframe with two rows (male-female) and having as columns gender, mean, SD, sample size, 
+# the t-critical value, the standard error, the margin of error, 
+# and the low/high endpoints of a 95% confidence interval
+
+subset_female = omega[which(omega $ gender == &quot;female&quot;),]</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;omega&#39; not found</code></pre>
+<pre class="r"><code>subset_male = omega[which(omega $ gender == &quot;male&quot;),]</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;omega&#39; not found</code></pre>
+<pre class="r"><code>sd_female = sd(subset_female $ salary)</code></pre>
+<pre><code>## Error in rlang::is_formula(x): object &#39;subset_female&#39; not found</code></pre>
+<pre class="r"><code>sd_male = sd(subset_male $ salary)</code></pre>
+<pre><code>## Error in rlang::is_formula(x): object &#39;subset_male&#39; not found</code></pre>
+<pre class="r"><code>mean_female = mean(subset_female $ salary)</code></pre>
+<pre><code>## Error in mean(subset_female$salary): object &#39;subset_female&#39; not found</code></pre>
+<pre class="r"><code>mean_male = mean(subset_male $ salary)</code></pre>
+<pre><code>## Error in mean(subset_male$salary): object &#39;subset_male&#39; not found</code></pre>
+<pre class="r"><code>n_female = length(subset_female $ salary)</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;subset_female&#39; not found</code></pre>
+<pre class="r"><code>n_male = length(subset_male $ salary)</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;subset_male&#39; not found</code></pre>
+<pre class="r"><code>margin_error = 0.05
+t_critical = 1.66
+
+standard_error = sqrt((sd_female^2 / n_female) + (sd_male^2 / n_male))</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;sd_female&#39; not found</code></pre>
+<pre class="r"><code>t_statistic = (mean_female - mean_male) / standard_error</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_female&#39; not found</code></pre>
+<pre class="r"><code>observed_difference = mean_female - mean_male</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;mean_female&#39; not found</code></pre>
+<pre class="r"><code>lb_95_CI = observed_difference - 2 * standard_error</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;observed_difference&#39; not found</code></pre>
+<pre class="r"><code>ub_95_CI = observed_difference + 2 * standard_error</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;observed_difference&#39; not found</code></pre>
+<pre class="r"><code>summary_stats &lt;- data.frame(gender = c(&quot;female&quot;, &quot;male&quot;), mean = c(mean_female, mean_male), SD = c(sd_female, sd_male), sample_size = c(n_female, n_male), t_critical = c(t_critical, t_critical), standard_error = c(standard_error, standard_error), margin_error = c(margin_error, margin_error), lb_95_CI = c(lb_95_CI, lb_95_CI), ub_95_CI = c(ub_95_CI, ub_95_CI))</code></pre>
+<pre><code>## Error in data.frame(gender = c(&quot;female&quot;, &quot;male&quot;), mean = c(mean_female, : object &#39;mean_female&#39; not found</code></pre>
+<pre class="r"><code>summary_stats</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;summary_stats&#39; not found</code></pre>
+<p>After testing the null hypothesis of whether mean males salary equals mean females salary, we calculated a t-stat of approx 4, which is greater than the critical value of 1.66 with a 5% margin of error.</p>
+<p>As a result, we can reject the null hypothesis which means that the difference in mean salary estimated is different form zero.</p>
+<p>With a 95% confidence interval, the difference between females’ and males’ mean salary is 12973 - 4443 = 8696.</p>
+<p>We also can run a hypothesis testing, assuming as a null hypothesis that the mean difference in salaries is zero, or that, on average, men and women make the same amount of money. We run the hypothesis testing using <code>t.test()</code> and with the simulation method from the <code>infer</code> package.</p>
+<pre class="r"><code># hypothesis testing using t.test() 
+t.test(salary ~ gender, data = omega)</code></pre>
+<pre><code>## Error in eval(m$data, parent.frame()): object &#39;omega&#39; not found</code></pre>
+<pre class="r"><code># hypothesis testing using infer package
+set.seed(123)
+
+obs_stats &lt;- omega %&gt;% 
+  specify(salary ~ gender) %&gt;%
+  calculate(stat = &quot;diff in means&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;omega&#39; not found</code></pre>
+<pre class="r"><code>salaries_null_hyp &lt;- omega %&gt;%
+  specify(salary ~ gender) %&gt;%
+  hypothesize(null = &quot;independence&quot;) %&gt;%
+  generate(reps = 1000, type = &quot;permute&quot;) %&gt;%
+  calculate(stat = &quot;diff in means&quot;, order = c(&quot;female&quot;, &quot;male&quot;))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;omega&#39; not found</code></pre>
+<pre class="r"><code>salaries_null_hyp %&gt;% 
+  visualize(bins = 20, method = &quot;simulation&quot;, obs_stats = obs_stats)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;salaries_null_hyp&#39; not found</code></pre>
+<pre class="r"><code>salaries_null_hyp %&gt;%
+  get_p_value(obs_stats, direction = &quot;both&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;salaries_null_hyp&#39; not found</code></pre>
+<p>From looking at both the t test and infer package, we can see that the probability of there being a difference between males and females salary is not equal to 0. Looking at the null distribution, it is clear that the difference between means of 8696 is on the tail of the distribution and an extreme value. We can also conclude that the difference is statistically significant when viewing the p value.</p>
+</div>
+<div id="relationship-experience---gender" class="section level2">
+<h2>Relationship Experience - Gender?</h2>
+<p>At the board meeting, someone raised the issue that there was indeed a substantial difference between male and female salaries, but that this was attributable to other reasons such as differences in experience. A questionnaire send out to the 50 executives in the sample reveals that the average experience of the men is approximately 21 years, whereas the women only have about 7 years experience on average (see table below).</p>
+<pre class="r"><code># Summary Statistics of salary by gender
+favstats (experience ~ gender, data=omega)</code></pre>
+<pre><code>## Error in favstats(experience ~ gender, data = omega): object &#39;omega&#39; not found</code></pre>
+<p>Based on this evidence, can you conclude that there is a significant difference between the experience of the male and female executives? Perform similar analyses as in the previous section. Does your conclusion validate or endanger your conclusion about the difference in male and female salaries?</p>
+</div>
+<div id="relationship-salary---experience" class="section level2">
+<h2>Relationship Salary - Experience ?</h2>
+<p>Someone at the meeting argues that clearly, a more thorough analysis of the relationship between salary and experience is required before any conclusion can be drawn about whether there is any gender-based salary discrimination in the company.</p>
+<p>Analyzed the relationship between salary and experience and drew a scatterplot to visually inspect the data</p>
+<pre class="r"><code># hypothesis testing using t.test() 
+t.test(experience ~ gender, data = omega)</code></pre>
+<pre><code>## Error in eval(m$data, parent.frame()): object &#39;omega&#39; not found</code></pre>
+<pre class="r"><code># hypothesis testing using infer package
+set.seed(1234)
+
+obs_stat &lt;- omega %&gt;% 
+  specify(experience ~ gender) %&gt;%
+  calculate(stat = &quot;diff in means&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;omega&#39; not found</code></pre>
+<pre class="r"><code>salaries_in_null_world &lt;- omega %&gt;%
+  specify(experience ~ gender) %&gt;%
+  hypothesize(null = &quot;independence&quot;) %&gt;%
+  generate(reps = 1000, type = &quot;permute&quot;) %&gt;%
+  calculate(stat = &quot;diff in means&quot;, order = c(&quot;female&quot;, &quot;male&quot;))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;omega&#39; not found</code></pre>
+<pre class="r"><code>salaries_in_null_world %&gt;% 
+  visualize(bins = 20, method = &quot;simulation&quot;, obs_stat = obs_stat)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;salaries_in_null_world&#39; not found</code></pre>
+<pre class="r"><code>salaries_in_null_world %&gt;%
+  get_p_value(obs_stat, direction = &quot;both&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;salaries_in_null_world&#39; not found</code></pre>
+<p>Using the two methods, the difference is statistically significant at the 95% confidence interval. The findings do not endanger the previous conclusion regarding differences in male and female salaries, since the experience may not being impacting salary. We must first conduct an analysis on the relationship between salary and experience to understand the implication.</p>
+</div>
+<div id="check-correlations-between-the-data" class="section level2">
+<h2>Check correlations between the data</h2>
+<p>You can use <code>GGally:ggpairs()</code> to create a scatterplot and correlation matrix. Essentially, we change the order our variables will appear in and have the dependent variable (Y), salary, as last in our list. We then pipe the dataframe to <code>ggpairs()</code> with <code>aes</code> arguments to colour by <code>gender</code> and make ths plots somewhat transparent (<code>alpha  = 0.3</code>).</p>
+<pre class="r"><code>omega %&gt;% 
+  select(gender, experience, salary) %&gt;% #order variables they will appear in ggpairs()
+  ggpairs(aes(colour=gender, alpha = 0.3))+
+  theme_bw()</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;omega&#39; not found</code></pre>
+<p>There appears to a larger amount of women entering the workplace recently, while the number slowly decreases until there are no female representation on the more experienced end of the plot. Reasons may be since pregnancy poses career trade-offs for women, preference to focus on more of a caretaker role at later stages in life, or ceilings in the workplace. As both genders gain further experience, the deviation in salary to experience is less apparent compared to men who have more fluctuation in the salary at particular experience levels.</p>
+</div>
+</div>
+<div id="challenge-1-yield-curve-inversion" class="section level1">
+<h1>Challenge 1: Yield Curve inversion</h1>
+<p>Every so often, we hear warnings from commentators on the “inverted yield curve” and its predictive power with respect to recessions. An explainer what a <a href="https://www.reuters.com/article/us-usa-economy-yieldcurve-explainer/explainer-what-is-an-inverted-yield-curve-idUSKBN1O50GA">inverted yield curve is can be found here</a>. If you’d rather listen to something, here is a great podcast from <a href="https://www.podbean.com/media/share/dir-4zgj9-6aefd11">NPR on yield curve indicators</a></p>
+<p>In addition, many articles and commentators think that, e.g., <a href="https://www.bloomberg.com/news/articles/2019-08-14/u-k-yield-curve-inverts-for-first-time-since-financial-crisis"><em>Yield curve inversion is viewed as a harbinger of recession</em></a>. One can always doubt whether inversions are truly a harbinger of recessions, and <a href="https://twitter.com/5_min_macro/status/1161627360946511873">use the attached parable on yield curve inversions</a>.</p>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/yield_curve_parable.jpg" width="100%" style="display: block; margin: auto;" /></p>
+<p>In our case we will look at US data and use the <a href="https://fred.stlouisfed.org/">FRED database</a> to download historical yield curve rates, and plot the yield curves since 1999 to see when the yield curves flatten. If you want to know more, a very nice article that explains the <a href="https://fredblog.stlouisfed.org/2018/10/the-data-behind-the-fear-of-yield-curve-inversions/">yield curve is and its inversion can be found here</a>. At the end of this challenge you should produce this chart</p>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/yield_curve_challenge.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>First, we will use the <code>tidyquant</code> package to download monthly rates for different durations.</p>
+<pre class="r"><code># Get a list of FRED codes for US rates and US yield curve; choose monthly frequency
+# to see, eg., the 3-month T-bill https://fred.stlouisfed.org/series/TB3MS
+tickers &lt;- c(&#39;TB3MS&#39;, # 3-month Treasury bill (or T-bill)
+             &#39;TB6MS&#39;, # 6-month
+             &#39;GS1&#39;,   # 1-year
+             &#39;GS2&#39;,   # 2-year, etc....
+             &#39;GS3&#39;,
+             &#39;GS5&#39;,
+             &#39;GS7&#39;,
+             &#39;GS10&#39;,
+             &#39;GS20&#39;,
+             &#39;GS30&#39;)  #.... all the way to the 30-year rate
+
+# Turn  FRED codes to human readable variables
+myvars &lt;- c(&#39;3-Month Treasury Bill&#39;,
+            &#39;6-Month Treasury Bill&#39;,
+            &#39;1-Year Treasury Rate&#39;,
+            &#39;2-Year Treasury Rate&#39;,
+            &#39;3-Year Treasury Rate&#39;,
+            &#39;5-Year Treasury Rate&#39;,
+            &#39;7-Year Treasury Rate&#39;,
+            &#39;10-Year Treasury Rate&#39;,
+            &#39;20-Year Treasury Rate&#39;,
+            &#39;30-Year Treasury Rate&#39;)
+
+maturity &lt;- c(&#39;3m&#39;, &#39;6m&#39;, &#39;1y&#39;, &#39;2y&#39;,&#39;3y&#39;,&#39;5y&#39;,&#39;7y&#39;,&#39;10y&#39;,&#39;20y&#39;,&#39;30y&#39;)
+
+# by default R will sort these maturities alphabetically; but since we want
+# to keep them in that exact order, we recast maturity as a factor 
+# or categorical variable, with the levels defined as we want
+maturity &lt;- factor(maturity, levels = maturity)
+
+# Create a lookup dataset
+mylookup&lt;-data.frame(symbol=tickers,var=myvars, maturity=maturity)
+# Take a look:
+mylookup %&gt;% 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">symbol</th>
+<th align="left">var</th>
+<th align="left">maturity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">TB3MS</td>
+<td align="left">3-Month Treasury Bill</td>
+<td align="left">3m</td>
+</tr>
+<tr class="even">
+<td align="left">TB6MS</td>
+<td align="left">6-Month Treasury Bill</td>
+<td align="left">6m</td>
+</tr>
+<tr class="odd">
+<td align="left">GS1</td>
+<td align="left">1-Year Treasury Rate</td>
+<td align="left">1y</td>
+</tr>
+<tr class="even">
+<td align="left">GS2</td>
+<td align="left">2-Year Treasury Rate</td>
+<td align="left">2y</td>
+</tr>
+<tr class="odd">
+<td align="left">GS3</td>
+<td align="left">3-Year Treasury Rate</td>
+<td align="left">3y</td>
+</tr>
+<tr class="even">
+<td align="left">GS5</td>
+<td align="left">5-Year Treasury Rate</td>
+<td align="left">5y</td>
+</tr>
+<tr class="odd">
+<td align="left">GS7</td>
+<td align="left">7-Year Treasury Rate</td>
+<td align="left">7y</td>
+</tr>
+<tr class="even">
+<td align="left">GS10</td>
+<td align="left">10-Year Treasury Rate</td>
+<td align="left">10y</td>
+</tr>
+<tr class="odd">
+<td align="left">GS20</td>
+<td align="left">20-Year Treasury Rate</td>
+<td align="left">20y</td>
+</tr>
+<tr class="even">
+<td align="left">GS30</td>
+<td align="left">30-Year Treasury Rate</td>
+<td align="left">30y</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>df &lt;- tickers %&gt;% tidyquant::tq_get(get=&quot;economic.data&quot;, 
+                   from=&quot;1960-01-01&quot;)   # start from January 1960
+
+glimpse(df)</code></pre>
+<pre><code>## Rows: 6,774
+## Columns: 3
+## $ symbol &lt;chr&gt; &quot;TB3MS&quot;, &quot;TB3MS&quot;, &quot;TB3MS&quot;, &quot;TB3MS&quot;, &quot;TB3MS&quot;, &quot;TB3MS&quot;, &quot;TB3MS&quot;,…
+## $ date   &lt;date&gt; 1960-01-01, 1960-02-01, 1960-03-01, 1960-04-01, 1960-05-01, 1…
+## $ price  &lt;dbl&gt; 4.35, 3.96, 3.31, 3.23, 3.29, 2.46, 2.30, 2.30, 2.48, 2.30, 2.…</code></pre>
+<p>Our dataframe <code>df</code> has three columns (variables):</p>
+<ul>
+<li><code>symbol</code>: the FRED database ticker symbol</li>
+<li><code>date</code>: already a date object</li>
+<li><code>price</code>: the actual yield on that date</li>
+</ul>
+<p>The first thing would be to join this dataframe <code>df</code> with the dataframe <code>mylookup</code> so we have a more readable version of maturities, durations, etc.</p>
+<pre class="r"><code>yield_curve &lt;-left_join(df,mylookup,by=&quot;symbol&quot;) </code></pre>
+<div id="plotting-the-yield-curve" class="section level2">
+<h2>Plotting the yield curve</h2>
+<p>This may seem long but it should be easy to produce the following three plots</p>
+<div id="yields-on-us-rates-by-duration-since-1960" class="section level3">
+<h3>Yields on US rates by duration since 1960</h3>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/yield_curve1.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>yield_curve$var_f = factor(yield_curve$var, levels=c(&#39;3-Month Treasury Bill&#39;, &#39;6-Month Treasury Bill&#39;, &#39;1-Year Treasury Rate&#39;, &#39;2-Year Treasury Rate&#39;,&#39;3-Year Treasury Rate&#39;,&#39;5-Year Treasury Rate&#39;,&#39;7-Year Treasury Rate&#39;,&#39;10-Year Treasury Rate&#39;,&#39;20-Year Treasury Rate&#39;,&#39;30-Year Treasury Rate&#39;))
+
+ggplot(yield_curve, aes(x=date, y=price, color=symbol)) +
+  geom_line()+
+  facet_wrap(~var_f, ncol=2)+
+  theme_bw()+
+  theme(legend.position = &quot;none&quot;,
+         axis.title.x=element_blank(),
+         axis.title.y=element_blank()
+        )+
+  labs(
+    title = &quot;Yields on U.S. Treasury Rates since 1960&quot;,
+    caption = &quot;Source: St. Louis Federal Reserve Economic Database (FRED)&quot;
+  )</code></pre>
+<p><img src="index_files/figure-html/yield_curve_1.1,%20fig1-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="monthly-yields-on-us-rates-by-duration-since-1999-on-a-year-by-year-basis" class="section level3">
+<h3>Monthly yields on US rates by duration since 1999 on a year-by-year basis</h3>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/yield_curve2.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>yield_curve_1998 &lt;- yield_curve %&gt;%
+  mutate(year = year(ymd(date))) %&gt;%
+  filter(year &gt; 1998) %&gt;%
+  mutate(month = month(ymd(date)))
+
+ggplot(yield_curve_1998, aes(x=maturity, y=price))+
+  facet_wrap(~year,ncol = 4)+
+  geom_line(aes(group = month, color=factor(year)))+
+  theme_bw()+
+  theme(legend.position = &quot;none&quot;)+
+  labs(title=&quot;U.S. Yield Curve&quot;, x=&quot;Maturity&quot;, y=&quot;Yield (%)&quot;, caption = &quot;Source: St. Louis Federal Reserve Economic Database (FRED)&quot;)</code></pre>
+<p><img src="index_files/figure-html/yield_curve_1.2,%20fig1-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="month-and-10-year-yields-since-1999" class="section level3">
+<h3>3-month and 10-year yields since 1999</h3>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/yield_curve3.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>yield_curve_3_10 &lt;- yield_curve %&gt;%
+  mutate(year = year(ymd(date))) %&gt;%
+  filter(year &gt; 1998) %&gt;%
+  filter(var_f %in% c(&quot;3-Month Treasury Bill&quot;,&quot;10-Year Treasury Rate&quot;))
+  
+
+ggplot(yield_curve_3_10, aes(x=date, y=price))+
+  geom_line(aes(color=var_f))+
+  theme_bw()+
+  theme(legend.position = &quot;right&quot;, legend.title = element_blank())+
+  labs(title=&quot;Yields on 3-month and 10-year US Treasury rates since 1999&quot;, x=&quot;&quot;, y=&quot;%&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>According to <a href="https://en.wikipedia.org/wiki/List_of_recessions_in_the_United_States">Wikipedia’s list of recession in the United States</a>, since 1999 there have been two recession in the US: between Mar 2001–Nov 2001 and between Dec 2007–June 2009. Does the yield curve seem to flatten before these recessions? Can a yield curve flattening really mean a recession is coming in the US? Since 1999, when did short-term (3 months) yield more than longer term (10 years) debt?</p>
+<p>Besides calculating the spread (10year - 3months), there are a few things we need to do to produce our final plot</p>
+<ol style="list-style-type: decimal">
+<li>Setup data for US recessions</li>
+<li>Superimpose recessions as the grey areas in our plot</li>
+<li>Plot the spread between 30 years and 3 months as a blue/red ribbon, based on whether the spread is positive (blue) or negative(red)</li>
+</ol>
+<ul>
+<li>For the first, the code below creates a dataframe with all US recessions since 1946</li>
+</ul>
+<pre class="r"><code># get US recession dates after 1946 from Wikipedia 
+# https://en.wikipedia.org/wiki/List_of_recessions_in_the_United_States
+
+recessions &lt;- tibble(
+  from = c(&quot;1948-11-01&quot;, &quot;1953-07-01&quot;, &quot;1957-08-01&quot;, &quot;1960-04-01&quot;, &quot;1969-12-01&quot;, &quot;1973-11-01&quot;, &quot;1980-01-01&quot;,&quot;1981-07-01&quot;, &quot;1990-07-01&quot;, &quot;2001-03-01&quot;, &quot;2007-12-01&quot;),  
+  to = c(&quot;1949-10-01&quot;, &quot;1954-05-01&quot;, &quot;1958-04-01&quot;, &quot;1961-02-01&quot;, &quot;1970-11-01&quot;, &quot;1975-03-01&quot;, &quot;1980-07-01&quot;, &quot;1982-11-01&quot;, &quot;1991-03-01&quot;, &quot;2001-11-01&quot;, &quot;2009-06-01&quot;) 
+  )  %&gt;% 
+  mutate(From = ymd(from), 
+         To=ymd(to),
+         duration_days = To-From)
+
+recessions</code></pre>
+<pre><code>## # A tibble: 11 x 5
+##    from       to         From       To         duration_days
+##    &lt;chr&gt;      &lt;chr&gt;      &lt;date&gt;     &lt;date&gt;     &lt;drtn&gt;       
+##  1 1948-11-01 1949-10-01 1948-11-01 1949-10-01 334 days     
+##  2 1953-07-01 1954-05-01 1953-07-01 1954-05-01 304 days     
+##  3 1957-08-01 1958-04-01 1957-08-01 1958-04-01 243 days     
+##  4 1960-04-01 1961-02-01 1960-04-01 1961-02-01 306 days     
+##  5 1969-12-01 1970-11-01 1969-12-01 1970-11-01 335 days     
+##  6 1973-11-01 1975-03-01 1973-11-01 1975-03-01 485 days     
+##  7 1980-01-01 1980-07-01 1980-01-01 1980-07-01 182 days     
+##  8 1981-07-01 1982-11-01 1981-07-01 1982-11-01 488 days     
+##  9 1990-07-01 1991-03-01 1990-07-01 1991-03-01 243 days     
+## 10 2001-03-01 2001-11-01 2001-03-01 2001-11-01 245 days     
+## 11 2007-12-01 2009-06-01 2007-12-01 2009-06-01 548 days</code></pre>
+<ul>
+<li>To add the grey shaded areas corresponding to recessions, we use <code>geom_rect()</code></li>
+<li>to colour the ribbons blue/red we must see whether the spread is positive or negative and then use <code>geom_ribbon()</code>. You should be familiar with this from last week’s homework on the excess weekly/monthly rentals of Santander Bikes in London.</li>
+</ul>
+<pre class="r"><code>library(scales)
+
+yield_curve_final &lt;- yield_curve %&gt;% 
+  filter(maturity %in% c(&quot;3m&quot;,&quot;10y&quot;)) %&gt;% 
+  mutate(year=year(ymd(date))) %&gt;% 
+  mutate(date=ymd(date)) %&gt;% 
+  arrange(date) %&gt;% 
+  select(-var,-symbol,-var_f) %&gt;% 
+  mutate(
+    maturity=case_when(
+      maturity==&quot;3m&quot; ~ &quot;three_month&quot;,
+      maturity==&quot;10y&quot; ~&quot;ten_year&quot;
+    )
+  ) %&gt;% 
+  pivot_wider(names_from = &quot;maturity&quot;,values_from = &quot;price&quot;)
+
+recessions_final &lt;- recessions %&gt;% 
+  select(From, To, duration_days) %&gt;% 
+  mutate(year=year(ymd(From)))
+
+data &lt;- left_join(yield_curve_final,recessions_final,by=&quot;year&quot;) %&gt;% 
+  mutate(diff = ten_year-three_month) %&gt;% 
+  mutate(
+         plus_per = ifelse(diff&gt;0, diff, 0), 
+         minus_per = ifelse(diff &lt; 0, diff, 0)
+         )
+
+
+
+ggplot(data, aes(x=date, y=diff), fill=&quot;blue&quot;)+
+  geom_line()+
+  geom_line(y=0, color=&quot;black&quot;)+
+  geom_ribbon(aes(ymin=0,ymax=minus_per),fill=&quot;red&quot;,alpha=0.6)+
+  geom_ribbon(aes(ymin=0,ymax=plus_per),fill=&quot;lightblue&quot;,alpha=0.6)+
+  geom_rect(aes(xmin=ymd(From), xmax=ymd(To), ymin=-Inf, ymax=Inf), fill=&#39;darkgray&#39;, alpha=0.05)+
+  theme_minimal()+
+  geom_rug(aes(colour=ifelse(diff&gt;=0,&quot;&gt;=0&quot;,&quot;&lt;0&quot;)),sides=&quot;b&quot;)+
+  scale_colour_manual(values=c(&quot;red&quot;,&quot;lightblue&quot;), guide=FALSE)+
+  scale_x_date(
+    limits = c(as.Date(&quot;1960-01-01&quot;,  &quot;%Y-%m-%d&quot;), as.Date(&quot;2020-12-20&quot;,  &quot;%Y-%m-%d&quot;)),
+    breaks = date_breaks(&quot;3 year&quot;),
+    labels = date_format(&quot;%Y&quot;))+
+  labs(title = &quot;Yield Curve Inversion: 10-year minus 3-month U.S. Treasury rates&quot;, 
+       subtitle = &quot;Difference in % points, monthly averages.\nShaded areas correspond to recessions&quot;,
+       x=&quot;&quot;,
+       y=&quot;Difference (10-year minus 3-month) yield in %&quot;,
+       caption = &quot;Source: FRED, Federal Reserve Bank of St Louis&quot;)+
+  theme(axis.text = element_text(size=6), 
+        axis.title = element_text(size=8), 
+        plot.title = element_text(size=10,face=&quot;bold&quot;), 
+        plot.subtitle = element_text(size=6))</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+</div>
+<div id="challenge-2gdp-components-over-time-and-among-countries" class="section level1">
+<h1>Challenge 2:GDP components over time and among countries</h1>
+<p>At the risk of oversimplifying things, the main components of gross domestic product, GDP are personal consumption (C), business investment (I), government spending (G) and net exports (exports - imports). You can read more about GDP and the different approaches in calculating at the <a href="https://en.wikipedia.org/wiki/Gross_domestic_product">Wikipedia GDP page</a>.</p>
+<p>The GDP data we will look at is from the <a href="https://unstats.un.org/unsd/snaama/Downloads">United Nations’ National Accounts Main Aggregates Database</a>, which contains estimates of total GDP and its components for all countries from 1970 to today. We will look at how GDP and its components have changed over time, and compare different countries and how much each component contributes to that country’s GDP. The file we will work with is <a href="http://unstats.un.org/unsd/amaapi/api/file/6">GDP and its breakdown at constant 2010 prices in US Dollars</a> and it has already been saved in the Data directory. Have a look at the Excel file to see how it is structured and organised</p>
+<pre class="r"><code>UN_GDP_data  &lt;-  read_excel(here::here(&quot;data&quot;, &quot;Download-GDPconstant-USD-countries.xls&quot;), # Excel filename
+                sheet=&quot;Download-GDPconstant-USD-countr&quot;, # Sheet name
+                skip=2) # Number of rows to skip</code></pre>
+<pre><code>## Error in read_excel(here::here(&quot;data&quot;, &quot;Download-GDPconstant-USD-countries.xls&quot;), : could not find function &quot;read_excel&quot;</code></pre>
+<p>The first thing you need to do is to tidy the data, as it is in wide format and you must make it into long, tidy format. Please express all figures in billions (divide values by <code>1e9</code>, or <span class="math inline">\(10^9\)</span>), and you want to rename the indicators into something shorter.</p>
+<blockquote>
+<p>make sure you remove <code>eval=FALSE</code> from the next chunk of R code– I have it there so I could knit the document</p>
+</blockquote>
+<pre class="r"><code>tidy_GDP_data  &lt;-  UN_GDP_data %&gt;% 
+  pivot_longer(
+               cols=&quot;1970&quot;:&quot;2017&quot;,
+               names_to = &quot;year&quot;, 
+               values_to= &quot;value&quot;
+               ) %&gt;% 
+  mutate(year= as.Date(year, &quot;%Y&quot;))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;UN_GDP_data&#39; not found</code></pre>
+<pre class="r"><code>glimpse(tidy_GDP_data)</code></pre>
+<pre><code>## Error in glimpse(tidy_GDP_data): object &#39;tidy_GDP_data&#39; not found</code></pre>
+<pre class="r"><code># Let us compare GDP components for these 3 countries
+country_list &lt;- c(&quot;United States&quot;,&quot;India&quot;, &quot;Germany&quot;)</code></pre>
+<p>First, can you produce this plot?</p>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/gdp1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>Secondly, recall that GDP is the sum of Household Expenditure (Consumption <em>C</em>), Gross Capital Formation (business investment <em>I</em>), Government Expenditure (G) and Net Exports (exports - imports). Even though there is an indicator <code>Gross Domestic Product (GDP)</code> in your dataframe, I would like you to calculate it given its components discussed above.</p>
+<pre class="r"><code>gdp_time &lt;- tidy_GDP_data %&gt;% 
+  #filtering for the components of GDP and countries that we need
+  filter(Country %in% country_list,
+         IndicatorName %in% c(&quot;Gross capital formation&quot;, 
+                              &quot;Household consumption expenditure (including Non-profit institutions serving households)&quot;,
+                              &quot;Imports of goods and services&quot;,
+                              &quot;Exports of goods and services&quot;,
+                              &quot;General government final consumption expenditure&quot;)) %&gt;% 
+  mutate(value= value/ 1e9) </code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;tidy_GDP_data&#39; not found</code></pre>
+<pre class="r"><code>gdp_time &lt;- gdp_time  %&gt;% 
+  mutate(
+    IndicatorName= case_when(
+      IndicatorName == &quot;Imports of goods and services&quot; ~ &quot;Imports&quot;,
+      IndicatorName == &quot;Exports of goods and services&quot; ~ &quot;Exports&quot;,
+      IndicatorName == &quot;General government final consumption expenditure&quot; ~ &quot;Government Expenditure&quot;,
+      IndicatorName == &quot;Household consumption expenditure (including Non-profit institutions serving households)&quot; ~ &quot;Household Expenditure&quot;,
+      IndicatorName ==&quot;Gross capital formation&quot;~&quot;Gross Capital Formation&quot;
+    ))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;gdp_time&#39; not found</code></pre>
+<pre class="r"><code>ggplot(gdp_time, aes(x=year, y=value, color= IndicatorName)) +
+  geom_line(aes(group=IndicatorName))+
+  facet_wrap(~Country)+
+  theme_bw()+
+  labs(
+    title = &quot;GDP Components over time&quot;,
+    subtitle= &quot;In constant 2010 USD&quot;,
+    y=&quot;Billion US$&quot;,
+    color= &quot;Components of GDP&quot;)+
+  theme(axis.title.x=element_blank())</code></pre>
+<pre><code>## Error in ggplot(gdp_time, aes(x = year, y = value, color = IndicatorName)): object &#39;gdp_time&#39; not found</code></pre>
+<pre class="r"><code>#calculating GDP as a sum of its components
+GDP_Countries &lt;- tidy_GDP_data %&gt;% 
+  #filtering for the components of GDP 
+  filter(IndicatorName %in% c(&quot;Gross capital formation&quot;, 
+                              &quot;Household consumption expenditure (including Non-profit institutions serving households)&quot;,
+                              &quot;Imports of goods and services&quot;,
+                              &quot;Exports of goods and services&quot;,
+                              &quot;General government final consumption expenditure&quot;)) %&gt;%  
+  mutate(
+    IndicatorName= case_when(
+      IndicatorName == &quot;Imports of goods and services&quot; ~ &quot;Imports&quot;,
+      IndicatorName == &quot;Exports of goods and services&quot; ~ &quot;Exports&quot;,
+      IndicatorName == &quot;General government final consumption expenditure&quot; ~ &quot;Government Expenditure&quot;,
+      IndicatorName == &quot;Household consumption expenditure (including Non-profit institutions serving households)&quot; ~ &quot;Household Expenditure&quot;,
+      IndicatorName ==&quot;Gross capital formation&quot;~&quot;Gross Capital Formation&quot;
+    )) %&gt;% 
+pivot_wider(names_from= IndicatorName, values_from=value) %&gt;% 
+  #calculating Net Exports
+  mutate(Net_Exports= Exports-Imports, 
+         #extracting the year from the date 
+         year=year(year)) %&gt;% 
+  select(-Imports, -Exports) %&gt;% 
+  pivot_longer(
+    cols=4:7,
+    names_to = &quot;IndicatorName&quot;, 
+    values_to= &quot;value&quot;) %&gt;% 
+  group_by(year, Country) %&gt;% 
+  #summing the components of GDP and assigning to Gross_Domestic_Product
+  summarise(Gross_Domestic_Product= sum(value))</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;tidy_GDP_data&#39; not found</code></pre>
+<pre class="r"><code>GDP_Countries</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;GDP_Countries&#39; not found</code></pre>
+<blockquote>
+<p>What is the % difference between what you calculated as GDP and the GDP figure included in the dataframe?</p>
+</blockquote>
+<pre class="r"><code>#selecting indicator GDP from UN GDP data
+UN_GDP &lt;- UN_GDP_data %&gt;% 
+  filter(IndicatorName==&quot;Gross Domestic Product (GDP)&quot;) %&gt;% 
+  pivot_longer(
+    cols=&quot;1970&quot;:&quot;2017&quot;,
+    names_to = &quot;year&quot;, 
+    values_to= &quot;value&quot;
+  ) %&gt;% 
+  rename(United_Nations_Data_GDP= &quot;value&quot;)</code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;UN_GDP_data&#39; not found</code></pre>
+<pre class="r"><code>GDP_Countries &lt;-
+  GDP_Countries %&gt;% 
+  mutate(year=as.character(year)) </code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;GDP_Countries&#39; not found</code></pre>
+<pre class="r"><code>#joining the UN GDP values with the calculated GDP and computing the percentage difference
+GDP_diff&lt;- inner_join(GDP_Countries, UN_GDP, by=c(&quot;Country&quot;, &quot;year&quot;)) %&gt;% 
+  mutate(percentage_difference_in_GDP= (Gross_Domestic_Product-
+                                          United_Nations_Data_GDP)/ United_Nations_Data_GDP) %&gt;% 
+  select(Country, year, percentage_difference_in_GDP)</code></pre>
+<pre><code>## Error in inner_join(GDP_Countries, UN_GDP, by = c(&quot;Country&quot;, &quot;year&quot;)): object &#39;GDP_Countries&#39; not found</code></pre>
+<pre class="r"><code>paste(&quot;Percentage difference in GDP calculated vs GDP figure included in the dataframe:&quot;)</code></pre>
+<pre><code>## [1] &quot;Percentage difference in GDP calculated vs GDP figure included in the dataframe:&quot;</code></pre>
+<pre class="r"><code>GDP_diff</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;GDP_diff&#39; not found</code></pre>
+<p><img src="/Users/joshuanemy/Documents/Documents/Josh/Education/Masters/LBS/Courses/Data Analytics For Finance/Website/my_website/images/gdp2.png" width="100%" style="display: block; margin: auto;" /></p>
+<blockquote>
+<p>What is this last chart telling you? Can you explain in a couple of paragraphs the different dynamic among these three countries?</p>
+</blockquote>
+<p>This last chart compares the change in the proportion of the various components of GDP over time for three countries (United States, India and Germany). Since the early 2000s, Germany has increased the proportion of its GDP from Net Exports (Exports-Imports) and now has one of the highest trade surpluses in the world - this is an indicator of economic strength and competitiveness.</p>
+<p>In India proportion of GDP from Household Expenditure has decreased sharply while there has been a sharp increase in the proportion of its GDP from Gross Capital Formation - this shows that the economy is growing quickly and investing in fixed asset (roads, railways, machinery, etc.)</p>
+<p>Lastly, in the United States the proportion of GDP from Household Expenditure has increased while the Net Exports decreased, implying that US is slightly relying more on imports of goods. Also, proportion of GDP from government expenditure has been slowly decreasing since 1970, indicating the reduced size of US government and its fiscal decentralization approach in the country.</p>
+<blockquote>
+<p>If you want to, please change <code>country_list &lt;- c("United States","India", "Germany")</code> to include your own country and compare it with any two other countries you like</p>
+</blockquote>
+<pre class="r"><code>trans_UN_GDP_Data &lt;-  UN_GDP_data %&gt;% 
+  #filtering for the components of GDP that we need for 3 selected countries
+  filter(Country %in% c(&quot;Italy&quot;, &quot;Canada&quot;, &quot;Belgium&quot;),
+         IndicatorName %in% c(&quot;Gross capital formation&quot;, 
+                              &quot;Household consumption expenditure (including Non-profit institutions serving households)&quot;,
+                              &quot;Imports of goods and services&quot;,
+                              &quot;Exports of goods and services&quot;,
+                              &quot;General government final consumption expenditure&quot;,
+                              &quot;Gross Domestic Product (GDP)&quot;)) %&gt;% 
+  mutate(IndicatorName= case_when(
+      IndicatorName == &quot;Imports of goods and services&quot; ~ &quot;Imports&quot;,
+      IndicatorName == &quot;Exports of goods and services&quot; ~ &quot;Exports&quot;,
+      IndicatorName == &quot;General government final consumption expenditure&quot; ~ &quot;Government_Expenditure&quot;,
+      IndicatorName == &quot;Household consumption expenditure (including Non-profit institutions serving households)&quot; ~ &quot;Household_Expenditure&quot;,
+      IndicatorName ==&quot;Gross capital formation&quot;~&quot;Gross_Capital_Formation&quot;,
+      IndicatorName ==&quot;Gross Domestic Product (GDP)&quot;~&quot;GDP&quot;
+    )) %&gt;% 
+  pivot_longer(
+    cols=&quot;1970&quot;:&quot;2017&quot;,
+    names_to = &quot;year&quot;, 
+    values_to= &quot;value&quot;
+  ) %&gt;% 
+  mutate(year= as.Date(year, &quot;%Y&quot;)) %&gt;% 
+  #changing to wide format to calculate the proportion of GDP for various components
+  pivot_wider(names_from = IndicatorName, values_from= &quot;value&quot;) %&gt;% 
+  mutate(
+    Net_Exports= Exports- Imports,
+    perc_NE= Net_Exports/ GDP,
+    perc_GE= Government_Expenditure/ GDP,
+    perc_GCF= Gross_Capital_Formation/GDP,
+    perc_HE= Household_Expenditure/GDP
+  ) %&gt;% 
+  #pivoting back to long format in order to create a time series plot
+  pivot_longer(cols= &quot;perc_NE&quot;: &quot;perc_HE&quot;, names_to= &quot;IndicatorName&quot;, values_to= &quot;Proportion&quot;) %&gt;% 
+  mutate(
+    IndicatorName= case_when(
+      IndicatorName == &quot;perc_HE&quot; ~ &quot;Household_Expenditure&quot;,
+      IndicatorName ==&quot;perc_GCF&quot;~&quot;Gross_Capital_Formation&quot;,
+      IndicatorName ==&quot;perc_NE&quot;~&quot;Net_Exports&quot;,
+      IndicatorName== &quot;perc_GE&quot;~&quot;Government_Expenditure&quot;
+    )) </code></pre>
+<pre><code>## Error in eval(lhs, parent, parent): object &#39;UN_GDP_data&#39; not found</code></pre>
+<pre class="r"><code>ggplot(trans_UN_GDP_Data, aes(x=year, y=Proportion, color= IndicatorName)) +
+  geom_line(aes(group=IndicatorName))+
+  facet_wrap(~Country)+
+  theme_bw()+
+  labs(
+    title = &quot;GDP and its breakdown at constant 2010 prices in US Dollars&quot;,
+    y=&quot;proportion&quot;,
+    color= &quot;Components of GDP&quot;,
+    caption=&quot;Source: United Nations , https://unstats.un.org/unsd/snaama/Downloads&quot;
+  )+
+  theme(
+    axis.title.x=element_blank(),
+    legend.title = element_blank()
+  )+
+  scale_y_continuous(labels = scales::percent)+
+  theme_bw()</code></pre>
+<pre><code>## Error in ggplot(trans_UN_GDP_Data, aes(x = year, y = Proportion, color = IndicatorName)): object &#39;trans_UN_GDP_Data&#39; not found</code></pre>
+</div>
+<div id="details-1" class="section level1">
+<h1>Details</h1>
+<ul>
+<li>Who did you collaborate with: Group 12: Chushi Guo, Erkka Salo, Joshua Nemy, Julien Vermeersch, Marta Maccagno, and Raymond Zexin Wu</li>
 </ul>
 </div>

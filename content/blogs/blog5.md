@@ -23,9 +23,18 @@ My exchange provided many memorable experiences and I developed some life-long f
 
 ![](/blogs/blog5_files/Norway3.JPG)
 
+Trolltunga, otherwise known as the Troll's tongue.
+
 ![](/blogs/blog5_files/Norway.JPG)
+
+Preikestolen or the "The Pulpit Rock""
 
 ![](/blogs/blog5_files/Norway4.jpeg)
 
+One of the seven mountains surrounding Bergen.
+
+![](/blogs/blog5_files/Norway5.JPG)
+
+Bike ride through the woods.
 
 ---

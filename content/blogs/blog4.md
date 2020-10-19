@@ -17,11 +17,19 @@ These are some of the sports teams I enjoy watching and support in both hockey a
 
 ![](/blogs/blog4_files/fullsizeoutput_975.JPG)
 
+Winnipeg Jets (NHL)
+
 ![](/blogs/blog4_files/Leeds2.JPG)
+
+Leeds United (Premier League, English Football)
 
 ![](/blogs/blog4_files/Barca.JPG)
 
+FC Barcelona (La Liga, Spanish Football)
+
 ![](/blogs/blog4_files/Dortmund.JPG)
+
+Borussia Dortmund (Bundesliga, German Football)
 
 ---
 

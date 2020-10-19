@@ -53,11 +53,11 @@ disqusShortname = ""
 
     [[params.navigation.links]]
       name = "Travel"
-      url = "blogs/travel"
+      url = "blogs/EuroTrip"
 
     [[params.navigation.links]]
       name = "Sports"
-      url = "sports.html"
+      url = "blogs/sports"
 
     # Add custom links here by uncommenting code below. To remove links just delete
     # the [[params.navigation.links]] map associated with that link. Copy and paste
@@ -124,7 +124,7 @@ disqusShortname = ""
 
     [[params.tiles.showcase]]
       title = "Football"
-      subtitle = "Leeds United and Barcelona"
+      subtitle = "My Sports Teams"
       image = "Leeds.jpg"
       url = "blogs/sports"
       
@@ -185,27 +185,27 @@ disqusShortname = ""
   # Footer section
   [params.footer]
     enable = true
-    copyright = "Nemy Capital"
+    copyright = "Nemy"
 
     # Uses font awesome icons
-    [[params.footer.social]]
-      icon = "fa-twitter"
-      url= "https://www.twitter.com"
-      label = "Twitter"
+    #[[params.footer.social]]
+      #icon = "fa-twitter"
+      #url= "https://www.twitter.com"
+      #label = "Twitter"
 
-    [[params.footer.social]]
-      icon = "fa-facebook"
-      url= "https://www.facebook.com"
-      label = "Facebook"
+    #[[params.footer.social]]
+      #icon = "fa-facebook"
+      #url= "https://www.facebook.com"
+      #label = "Facebook"
 
-    [[params.footer.social]]
-      icon = "fa-instagram"
-      url= "https://www.instagram.com"
-      label = "Instagram"
+    #[[params.footer.social]]
+      #icon = "fa-instagram"
+      #url= "https://www.instagram.com"
+      #label = "Instagram"
     
     [[params.footer.social]]
       icon = "fa-github"
-      url= "https://www.github.com"
+      url= "https://www.github.com/JoshuaNemy/my_website"
       label = "GitHub"
 
     [[params.footer.social]]
